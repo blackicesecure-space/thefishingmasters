@@ -11,27 +11,33 @@ Wir bauen eine datengetriebene App, die Anglern täglich sagt, **wohin** sie fah
 - **ML/Data:** Python 3.11, scikit-learn, pandas, numpy, pdfplumber
 
 ## Repository-Struktur
-- `apps/web`: Next.js Web-App (Platzhalterstruktur)
-- `apps/mobile`: Expo React-Native-App (Platzhalterstruktur)
+- `apps/web`: Web-MVP Scope + Akzeptanzkriterien
+- `apps/mobile`: Mobile-MVP Scope
 - `services/api`: GraphQL Schema + Server-Bootstrap
-- `services/ml`: FastAPI-Startservice (`/health`, `/predict`)
+- `services/ml`: FastAPI-Startservice (`/health`, `/predict`) + Scoring-Modul
 - `infra/supabase`: Datenbankschema & Migrationen
 - `data_pipeline`: PDF-Extraktion für LAV-Daten
+- `tests`: Unit-Tests für ML-Scoring und PDF-Parser
 - `files/index.html`: frühes UI-Prototyping
 
-## Architektur-Dokument (Soll + Ist)
-- Zielarchitektur und aktueller Umsetzungsstand sind in `docs/system-architecture.md` als **Soll + Ist** strukturiert dokumentiert.
-- Die Roadmap mit den nächsten Schritten ist dort unter **Roadmap / Nächste Schritte** gepflegt.
-
-## Nächste technische TODOs (Status)
+## Status (Go-Forward)
 - ✅ Monorepo-Tooling (pnpm + Turbo) etabliert
-- ✅ Supabase-Migration als SQL-Datei bereitgestellt (`infra/supabase/migrations/001_init.sql`)
+- ✅ Supabase-Migration bereitgestellt (`infra/supabase/migrations/001_init.sql`)
 - ✅ GraphQL-Schema + Resolver-Bootstrap vorhanden (`services/api`)
 - ✅ FastAPI-Service mit `/predict` und `/health` vorhanden (`services/ml/app.py`)
 - ✅ Datenimport-Pipeline Startpunkt vorhanden (`data_pipeline/import_lav_pdf.py`)
+- ✅ Baseline-Unit-Tests vorhanden (`tests/test_scoring.py`, `tests/test_data_pipeline.py`)
+
+## Readme-Index (pro Bereich)
+- Architektur: `docs/system-architecture.md`
+- Web: `apps/web/README.md`
+- Mobile: `apps/mobile/README.md`
+- API: `services/api/README.md`
+- ML: `services/ml/README.md`
+- Data Pipeline: `data_pipeline/README.md`
 
 ## Quickstart
-### ML API
+### 1) ML API starten
 ```bash
 cd services/ml
 python3 -m venv .venv
@@ -40,9 +46,15 @@ pip install -r requirements.txt
 uvicorn app:app --reload --port 8001
 ```
 
-### GraphQL API
+### 2) GraphQL API starten
 ```bash
 cd services/api
 pnpm install
 pnpm dev
+```
+
+### 3) Unit-Tests ausführen
+```bash
+cd /workspace/thefishingmasters
+python3 -m unittest discover -s tests -p 'test_*.py'
 ```

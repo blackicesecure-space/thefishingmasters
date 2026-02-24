@@ -1,11 +1,12 @@
 # ML Service (FastAPI)
 
-MVP-Scope:
+## MVP-Scope
 - `GET /health` für Monitoring
 - `POST /predict` für Beißwahrscheinlichkeit
 
 ## Dateien
-- `app.py`: FastAPI-App mit Baseline-Scoring
+- `app.py`: FastAPI-App
+- `scoring.py`: testbares Baseline-Scoring
 - `requirements.txt`: Python-Abhängigkeiten
 
 ## Lokal starten
@@ -22,4 +23,10 @@ uvicorn app:app --reload --port 8001
 curl -X POST http://127.0.0.1:8001/predict \
   -H 'content-type: application/json' \
   -d '{"target_species":"Zander","water_temp_c":14,"wind_kmh":12,"pressure_hpa":1012,"moon_phase":60,"season":"Herbst"}'
+```
+
+## Tests
+```bash
+cd /workspace/thefishingmasters
+python3 -m unittest tests/test_scoring.py -v
 ```
