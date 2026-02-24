@@ -20,6 +20,15 @@ Wir bauen eine datengetriebene App, die Anglern täglich sagt, **wohin** sie fah
 - `tests`: Unit-Tests für ML-Scoring und PDF-Parser
 - `files/index.html`: frühes UI-Prototyping
 
+## Nächste technische TODOs
+1. Monorepo-Tooling (pnpm + Turbo/Nx) etablieren
+2. Supabase-Projekt initialisieren und `infra/supabase/schema.sql` migrieren
+3. GraphQL-Schema (Auth, Spot-Query, Prediction-Resolver) aufsetzen
+4. FastAPI-Service mit `/predict` und `/health` bereitstellen
+5. Datenimport-Pipeline für LAV-PDFs erstellen
+
+> Hinweis: Der aktuelle Umsetzungsstand dieser Punkte ist im Abschnitt **Status (Go-Forward)** dokumentiert.
+
 ## Status (Go-Forward)
 - ✅ Monorepo-Tooling (pnpm + Turbo) etabliert
 - ✅ Supabase-Migration bereitgestellt (`infra/supabase/migrations/001_init.sql`)
