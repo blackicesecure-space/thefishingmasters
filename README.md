@@ -10,56 +10,20 @@ Wir bauen eine datengetriebene App, die Anglern täglich sagt, **wohin** sie fah
 - **Backend:** Supabase (PostgreSQL/Auth/Realtime), GraphQL API (Apollo auf Vercel Serverless), Python FastAPI
 - **ML/Data:** Python 3.11, scikit-learn, pandas, numpy, pdfplumber
 
+Siehe vollständige Spezifikation in `docs/system-architecture.md`.
+
 ## Repository-Struktur
-- `apps/web`: Web-MVP Scope + Akzeptanzkriterien
-- `apps/mobile`: Mobile-MVP Scope
-- `services/api`: GraphQL Schema + Server-Bootstrap
-- `services/ml`: FastAPI-Startservice (`/health`, `/predict`) + Scoring-Modul
-- `infra/supabase`: Datenbankschema & Migrationen
-- `data_pipeline`: PDF-Extraktion für LAV-Daten
-- `tests`: Unit-Tests für ML-Scoring und PDF-Parser
+- `apps/web`: Next.js Web-App (Platzhalterstruktur)
+- `apps/mobile`: Expo React-Native-App (Platzhalterstruktur)
+- `services/api`: GraphQL API (Serverless, Platzhalter)
+- `services/ml`: FastAPI Prediction Service (Platzhalter)
+- `infra/supabase`: Datenbankschema & Seed-Richtung
 - `files/index.html`: frühes UI-Prototyping
 
-## Status (Go-Forward)
-- ✅ Monorepo-Tooling (pnpm + Turbo) etabliert
-- ✅ Supabase-Migration bereitgestellt (`infra/supabase/migrations/001_init.sql`)
-- ✅ GraphQL-Schema + Resolver-Bootstrap vorhanden (`services/api`)
-- ✅ FastAPI-Service mit `/predict` und `/health` vorhanden (`services/ml/app.py`)
-- ✅ Datenimport-Pipeline Startpunkt vorhanden (`data_pipeline/import_lav_pdf.py`)
-- ✅ Baseline-Unit-Tests vorhanden (`tests/test_scoring.py`, `tests/test_data_pipeline.py`)
+## Nächste technische TODOs
+1. Monorepo-Tooling (pnpm + Turbo/Nx) etablieren
+2. Supabase-Projekt initialisieren und `infra/supabase/schema.sql` migrieren
+3. GraphQL-Schema (Auth, Spot-Query, Prediction-Resolver) aufsetzen
+4. FastAPI-Service mit `/predict` und `/health` bereitstellen
+5. Datenimport-Pipeline für LAV-PDFs erstellen
 
-## Readme-Index (pro Bereich)
-- Architektur: `docs/system-architecture.md`
-- Web: `apps/web/README.md`
-- Mobile: `apps/mobile/README.md`
-- API: `services/api/README.md`
-- ML: `services/ml/README.md`
-- Data Pipeline: `data_pipeline/README.md`
-
-## Quickstart
-### 1) ML API starten
-```bash
-cd services/ml
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-uvicorn app:app --reload --port 8001
-```
-
-### 2) GraphQL API starten
-```bash
-cd services/api
-pnpm install
-pnpm dev
-```
-
-### 3) Unit-Tests ausführen
-```bash
-cd /workspace/thefishingmasters
-python3 -m unittest discover -s tests -p 'test_*.py'
-```
-
-
-## Merge- & Branch-Hinweis
-- Bei Merge-Konflikten gilt diese Struktur als Referenz für README-Inhalte.
-- Detailentscheidungen leben in den jeweiligen Bereichs-READMEs (Web/Mobile/API/ML/Data).

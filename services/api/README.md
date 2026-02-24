@@ -30,3 +30,10 @@ pnpm dev
 
 ## Konfiguration
 - `ML_API_BASE_URL` (optional, Default: `http://127.0.0.1:8001`)
+Geplanter Scope (MVP):
+- Auth-geschützte Queries für Spot-Suche/Filter
+- Mutation für Session-Feedback (Erfolg/Misserfolg)
+- Resolver-Brücke zum ML-Service (`services/ml`)
+
+Nächster Schritt:
+- Apollo Server + schema-first Setup mit `Query.spots`, `Query.recommendations`, `Mutation.submitFeedback`.

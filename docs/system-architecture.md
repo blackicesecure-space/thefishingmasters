@@ -21,6 +21,8 @@
 - pandas, numpy
 - pdfplumber
 
+---
+
 ## 2) Architektur-Diagramm (logisch)
 
 ```text
@@ -52,6 +54,8 @@ Python FastAPI (Railway)
   - Spot Ranking
 ```
 
+---
+
 ## 3) Daten-Foundation
 
 ### Initiale Spot-Datenbank
@@ -65,10 +69,14 @@ Python FastAPI (Railway)
 ### SQL-Schema (Startpunkt)
 Siehe: `infra/supabase/schema.sql`.
 
+---
+
 ## 4) Echtzeit-Datenquellen
 - Wetter: Luftdruck, Wind, Bewölkung, Temperatur
 - Lunar: Mondphase, Solunar-Fenster, Mondstand
 - Community: Erfolg/Misserfolg, Fangfotos, Crowd-Level
+
+---
 
 ## 5) ML-Prognose-Engine
 
@@ -87,6 +95,9 @@ Siehe: `infra/supabase/schema.sql`.
 
 ## 6) Ranking-Strategie
 
+---
+
+## 6) Ranking-Strategie
 Multi-Objective Score (0–100):
 - 40% Beißprognose
 - 25% Spot-Qualität
@@ -96,12 +107,16 @@ Multi-Objective Score (0–100):
 
 Output: Top-3-Spots inkl. Zeitfenster, Ködervorschlag, Taktikhinweis.
 
+---
+
 ## 7) Delivery-Plan (MVP, 12 Wochen)
 1. Woche 1-2: Data Foundation
 2. Woche 3-4: ML Foundation
 3. Woche 5-6: Backend
 4. Woche 7-9: Frontend Web
 5. Woche 10-12: Mobile + QA
+
+---
 
 ## 8) Risiken (Kurz)
 - Modellgenauigkeit zu niedrig

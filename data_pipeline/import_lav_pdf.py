@@ -31,6 +31,15 @@ def extract_rows(pdf_path: Path) -> list[dict[str, str]]:
                 parsed = parse_line(line)
                 if parsed:
                     rows.append({**parsed, "source_file": pdf_path.name})
+                match = PATTERN.match(line.strip())
+                if match:
+                    rows.append(
+                        {
+                            "name": match.group("name").strip(),
+                            "gewaesser_typ": match.group("type"),
+                            "source_file": pdf_path.name,
+                        }
+                    )
     return rows
 
 
@@ -46,6 +55,9 @@ def main() -> None:
         writer = csv.DictWriter(f, fieldnames=["name", "gewaesser_typ", "source_file"])
         writer.writeheader()
         writer.writerows(rows)
+      writer = csv.DictWriter(f, fieldnames=["name", "gewaesser_typ", "source_file"])
+      writer.writeheader()
+      writer.writerows(rows)
 
     print(f"Extracted {len(rows)} rows to {args.out}")
 
