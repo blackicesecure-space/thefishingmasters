@@ -5,6 +5,11 @@ from typing import Literal
 from fastapi import FastAPI
 from pydantic import BaseModel, Field
 
+try:
+    from .scoring import compute_bite_probability
+except ImportError:
+    from scoring import compute_bite_probability
+
 Season = Literal["Fruehling", "Sommer", "Herbst", "Winter"]
 
 
@@ -34,6 +39,13 @@ def health() -> dict[str, str]:
 @app.post("/predict", response_model=PredictionResponse)
 def predict(payload: PredictionRequest) -> PredictionResponse:
     # Lightweight MVP baseline heuristic (to be replaced by sklearn model).
+    bite_probability = compute_bite_probability(
+        water_temp_c=payload.water_temp_c,
+        wind_kmh=payload.wind_kmh,
+        pressure_hpa=payload.pressure_hpa,
+        moon_phase=payload.moon_phase,
+        season=payload.season,
+    )
     temp_bonus = max(0.0, 18 - abs(payload.water_temp_c - 14)) * 1.8
     wind_penalty = max(0.0, payload.wind_kmh - 18) * 1.0
     pressure_bonus = max(0.0, 20 - abs(payload.pressure_hpa - 1015)) * 0.7
