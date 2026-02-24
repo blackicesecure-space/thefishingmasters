@@ -58,3 +58,8 @@ pnpm dev
 cd /workspace/thefishingmasters
 python3 -m unittest discover -s tests -p 'test_*.py'
 ```
+
+
+## Merge- & Branch-Hinweis
+- Bei Merge-Konflikten gilt diese Struktur als Referenz für README-Inhalte.
+- Detailentscheidungen leben in den jeweiligen Bereichs-READMEs (Web/Mobile/API/ML/Data).

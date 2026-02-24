@@ -10,6 +10,7 @@ PATTERN = re.compile(r"^(?P<name>[A-Za-zÄÖÜäöüß\-\s]+)\s+(?P<type>See|Flu
 
 
 def parse_line(line: str) -> dict[str, str] | None:
+    """Parse one extracted line and return spot fields if format matches."""
     match = PATTERN.match(line.strip())
     if not match:
         return None

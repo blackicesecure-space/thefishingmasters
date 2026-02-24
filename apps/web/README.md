@@ -74,3 +74,9 @@
 3. GraphQL-Client anbinden (`Query.spots`, `Query.recommendations`).
 4. Feedback-Submit gegen `Mutation.submitFeedback` integrieren.
 5. Dashboard-KPIs aus Session-/Feedback-Daten ableiten.
+
+
+## Definition of Done (MVP)
+- Flow, Spot-Detail, Feedback und Dashboard sind routbar und manuell testbar.
+- GraphQL-Queries/Mutations sind angebunden und Fehlermeldungen werden angezeigt.
+- Grundlegende Smoke-Checks für Kernpfade sind dokumentiert.

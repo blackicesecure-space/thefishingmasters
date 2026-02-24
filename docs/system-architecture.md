@@ -110,3 +110,8 @@ Output: Top-3-Spots inkl. Zeitfenster, Ködervorschlag, Taktikhinweis.
 - DSGVO-Compliance
 
 Mitigation: Transparenz, Incentives, Daten-Validierung, Privacy-by-Design.
+
+
+## 9) Soll + Ist (Kurzüberblick)
+- **Soll:** produktive Supabase-Queries, trainiertes Modell, vollständige Datenpipeline mit Geocoding.
+- **Ist:** MVP-Stubs/Bootstrap + Baseline-Scoring + parserbasierter Datenimport.

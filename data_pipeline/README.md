@@ -28,3 +28,8 @@ python3 -m unittest tests/test_data_pipeline.py -v
 ```
 
 Die aktuelle MVP-Version ist absichtlich schlank; Geocoding, Feldmapping und Datenvalidierung werden im nächsten Schritt erweitert.
+
+
+## Interne Parser-API
+- `parse_line(...)` validiert und extrahiert Spotname/Gewässertyp pro Textzeile.
+- `extract_rows(...)` aggregiert über alle Seiten und hängt `source_file` an.

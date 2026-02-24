@@ -26,3 +26,7 @@ pnpm dev
 - Auth-Context in Resolvern ergänzen
 - Mockdaten durch Supabase-Queries ersetzen
 - Fehlerhandling + Retries für ML-Bridge verbessern
+
+
+## Konfiguration
+- `ML_API_BASE_URL` (optional, Default: `http://127.0.0.1:8001`)

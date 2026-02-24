@@ -5,7 +5,10 @@ from typing import Literal
 from fastapi import FastAPI
 from pydantic import BaseModel, Field
 
-from scoring import compute_bite_probability
+try:
+    from .scoring import compute_bite_probability
+except ImportError:
+    from scoring import compute_bite_probability
 
 Season = Literal["Fruehling", "Sommer", "Herbst", "Winter"]
 

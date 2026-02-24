@@ -30,3 +30,7 @@ curl -X POST http://127.0.0.1:8001/predict \
 cd /workspace/thefishingmasters
 python3 -m unittest tests/test_scoring.py -v
 ```
+
+
+## Import-Hinweis
+- `app.py` unterstützt direkten Start im Service-Ordner und Paket-Importe (relative/absolute Fallback-Imports).

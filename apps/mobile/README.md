@@ -24,3 +24,9 @@
 3. Mapbox-Basislayer + Spot-Marker anbinden
 4. Recommendation-Flow mit API verbinden
 5. Feedback-Submit + Offline Queue umsetzen
+
+
+## Akzeptanzkriterien (MVP)
+- Empfehlung kann aus der App gestartet und angezeigt werden.
+- Spot-Detail ist aus Karte und Liste erreichbar.
+- Feedback kann offline gepuffert und später synchronisiert werden.
