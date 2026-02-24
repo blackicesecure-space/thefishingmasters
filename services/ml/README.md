@@ -10,12 +10,22 @@
 - `requirements.txt`: Python-Abhängigkeiten
 
 ## Lokal starten
+**macOS/Linux (bash/zsh)**
 ```bash
 cd services/ml
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 uvicorn app:app --reload --port 8001
+```
+
+**Windows (PowerShell)**
+```powershell
+Set-Location services/ml
+py -m venv .venv
+.\.venv\Scripts\Activate.ps1
+py -m pip install -r .\requirements.txt
+py -m uvicorn app:app --reload --port 8001
 ```
 
 ## Beispielrequest
@@ -26,10 +36,18 @@ curl -X POST http://127.0.0.1:8001/predict \
 ```
 
 ## Tests
+**macOS/Linux (bash/zsh)**
 ```bash
 cd /workspace/thefishingmasters
 python3 -m unittest tests/test_scoring.py -v
 python3 -m unittest discover -s tests -t . -p 'test_*.py'
+```
+
+**Windows (PowerShell)**
+```powershell
+Set-Location <REPO_ROOT>
+py -m unittest tests/test_scoring.py -v
+py -m unittest discover -s tests -t . -p "test_*.py"
 ```
 
 ## Import-Hinweis

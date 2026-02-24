@@ -47,12 +47,22 @@ Wir bauen eine datengetriebene App, die Anglern täglich sagt, **wohin** sie fah
 
 ## Quickstart
 ### 1) ML API starten
+**macOS/Linux (bash/zsh)**
 ```bash
 cd services/ml
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 uvicorn app:app --reload --port 8001
+```
+
+**Windows (PowerShell)**
+```powershell
+Set-Location services/ml
+py -m venv .venv
+.\.venv\Scripts\Activate.ps1
+py -m pip install -r .\requirements.txt
+py -m uvicorn app:app --reload --port 8001
 ```
 
 ### 2) GraphQL API starten
@@ -63,9 +73,16 @@ pnpm dev
 ```
 
 ### 3) Unit-Tests ausführen
+**macOS/Linux (bash/zsh)**
 ```bash
 cd /workspace/thefishingmasters
 python3 -m unittest discover -s tests -t . -p 'test_*.py'
+```
+
+**Windows (PowerShell)**
+```powershell
+Set-Location <REPO_ROOT>
+py -m unittest discover -s tests -t . -p "test_*.py"
 ```
 
 ### 4) Optional: ML API vom Repo-Root starten
@@ -81,6 +98,14 @@ uvicorn services.ml.app:app --reload --port 8001
 ### Test-Discovery Troubleshooting (Windows/py launcher)
 Wenn `ImportError: Start directory is not importable: 'tests'` erscheint, stelle sicher, dass du im Repo-Root bist und nutze:
 
-```bash
-python3 -m unittest discover -s tests -t . -p 'test_*.py'
+```powershell
+Set-Location <REPO_ROOT>
+py -m unittest discover -s tests -t . -p "test_*.py"
+```
+
+Wenn `requirements.txt` im `services/ml`-Ordner nicht gefunden wird, warst du sehr wahrscheinlich im falschen Verzeichnis. Prüfe zuerst mit `Get-Location` und installiere alternativ direkt vom Repo-Root:
+
+```powershell
+Set-Location <REPO_ROOT>
+py -m pip install -r .\services\ml\requirements.txt
 ```
