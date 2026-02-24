@@ -35,6 +35,7 @@ def extract_rows(pdf_path: Path) -> list[dict[str, str]]:
 
 
 def main() -> None:
+    """CLI entrypoint for MVP PDF row extraction."""
     parser = argparse.ArgumentParser(description="Extract basic spot rows from LAV PDF files")
     parser.add_argument("pdf", type=Path, help="Path to source PDF")
     parser.add_argument("--out", type=Path, default=Path("spots_extracted.csv"), help="Output CSV path")

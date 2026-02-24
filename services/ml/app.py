@@ -33,11 +33,13 @@ app = FastAPI(title="The Fishing Masters ML API", version="0.1.0")
 
 @app.get("/health")
 def health() -> dict[str, str]:
+    """Liveness endpoint for monitoring."""
     return {"status": "ok"}
 
 
 @app.post("/predict", response_model=PredictionResponse)
 def predict(payload: PredictionRequest) -> PredictionResponse:
+    """Return baseline bite probability prediction for MVP."""
     # Lightweight MVP baseline heuristic (to be replaced by sklearn model).
     bite_probability = compute_bite_probability(
         water_temp_c=payload.water_temp_c,

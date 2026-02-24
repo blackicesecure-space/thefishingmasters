@@ -115,3 +115,9 @@ Mitigation: Transparenz, Incentives, Daten-Validierung, Privacy-by-Design.
 ## 9) Soll + Ist (Kurzüberblick)
 - **Soll:** produktive Supabase-Queries, trainiertes Modell, vollständige Datenpipeline mit Geocoding.
 - **Ist:** MVP-Stubs/Bootstrap + Baseline-Scoring + parserbasierter Datenimport.
+
+
+## 10) Dokument-Kanon
+- Architektur-SOLL/IST ist hier führend.
+- Umsetzungsdetails und Runbooks sind in den Bereichs-READMEs (`services/*`, `apps/*`, `data_pipeline/*`) dokumentiert.
+

@@ -80,3 +80,9 @@
 - Flow, Spot-Detail, Feedback und Dashboard sind routbar und manuell testbar.
 - GraphQL-Queries/Mutations sind angebunden und Fehlermeldungen werden angezeigt.
 - Grundlegende Smoke-Checks für Kernpfade sind dokumentiert.
+
+
+## Merge-Hinweis
+- Diese Datei enthält Web-Scope/DoD.
+- Workspace-Start und plattformübergreifende Kommandos kommen zentral aus dem Root-`README.md`.
+

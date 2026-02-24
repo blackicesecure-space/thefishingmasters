@@ -50,3 +50,9 @@ pnpm dev --filter api
 - Fehler `ENOENT ... package.json` bedeutet: aktuelles Verzeichnis enthält keine `package.json` (falscher Ordner oder alter Checkout).
 - Prüfen mit `Get-Location` und `Get-ChildItem .\package.json`.
 - Falls Datei fehlt: `Set-Location <REPO_ROOT>` und `git pull`, dann erneut `pnpm install` + `pnpm dev --filter api`.
+
+
+## Merge-Hinweis
+- API-spezifische Details bleiben hier.
+- Workspace- und plattformübergreifende Basis-Kommandos werden vom Root-`README.md` gespiegelt.
+

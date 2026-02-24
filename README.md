@@ -116,3 +116,9 @@ Wenn `requirements.txt` im `services/ml`-Ordner nicht gefunden wird, warst du se
 Set-Location <REPO_ROOT>
 py -m pip install -r .\services\ml\requirements.txt
 ```
+
+
+## Konfliktauflösung (Canonical Sections)
+- Root-Quickstart und Troubleshooting in dieser Datei sind die führende Referenz.
+- Bereichsdetails stehen in den jeweiligen Service-READMEs, widersprechen aber nicht den Root-Kommandos.
+

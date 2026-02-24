@@ -57,3 +57,10 @@ py -m unittest discover -s tests -t . -p "test_*.py"
 ```bash
 uvicorn services.ml.app:app --reload --port 8001
 ```
+
+
+## Troubleshooting (Windows)
+- `source` ist ein Bash-Befehl und funktioniert nicht in PowerShell.
+- Nutze stattdessen `\.\.venv\Scripts\Activate.ps1` sowie `py -m ...` Kommandos aus den Blöcken oben.
+- Falls `requirements.txt` nicht gefunden wird: mit `Get-Location` prüfen und in `services/ml` wechseln.
+

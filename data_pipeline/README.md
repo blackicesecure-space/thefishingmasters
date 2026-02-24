@@ -33,3 +33,9 @@ Die aktuelle MVP-Version ist absichtlich schlank; Geocoding, Feldmapping und Dat
 ## Interne Parser-API
 - `parse_line(...)` validiert und extrahiert Spotname/Gewässertyp pro Textzeile.
 - `extract_rows(...)` aggregiert über alle Seiten und hängt `source_file` an.
+
+
+## Merge-Hinweis
+- Parser-Details bleiben hier lokal.
+- Übergreifende Tooling-/Test-Befehle (Root/Windows) sind im Root-`README.md` referenziert.
+
