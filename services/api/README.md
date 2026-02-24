@@ -1,14 +1,9 @@
 # GraphQL API (Vercel Serverless)
 
-MVP-Scope:
-- Auth-geschützte Spot-Suche/Filter
-- Empfehlung-Query mit ML-Bridge
-- Feedback-Mutation (Erfolg/Misserfolg)
+Geplanter Scope (MVP):
+- Auth-geschützte Queries für Spot-Suche/Filter
+- Mutation für Session-Feedback (Erfolg/Misserfolg)
+- Resolver-Brücke zum ML-Service (`services/ml`)
 
-## Artefakte
-- `schema.graphql`: schema-first Startpunkt für Apollo Server.
-
-## Geplanter Resolver-Flow
-1. `Query.spots`: liest Spotdaten aus Supabase.
-2. `Query.recommendations`: ruft ML-Service `/predict` auf und rankt Ergebnisse.
-3. `Mutation.submitFeedback`: schreibt Session-/Outcome-Daten in Supabase.
+Nächster Schritt:
+- Apollo Server + schema-first Setup mit `Query.spots`, `Query.recommendations`, `Mutation.submitFeedback`.

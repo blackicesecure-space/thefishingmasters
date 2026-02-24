@@ -10,39 +10,20 @@ Wir bauen eine datengetriebene App, die Anglern täglich sagt, **wohin** sie fah
 - **Backend:** Supabase (PostgreSQL/Auth/Realtime), GraphQL API (Apollo auf Vercel Serverless), Python FastAPI
 - **ML/Data:** Python 3.11, scikit-learn, pandas, numpy, pdfplumber
 
+Siehe vollständige Spezifikation in `docs/system-architecture.md`.
+
 ## Repository-Struktur
 - `apps/web`: Next.js Web-App (Platzhalterstruktur)
 - `apps/mobile`: Expo React-Native-App (Platzhalterstruktur)
-- `services/api`: GraphQL Schema + Server-Bootstrap
-- `services/ml`: FastAPI-Startservice (`/health`, `/predict`)
-- `infra/supabase`: Datenbankschema & Migrationen
-- `data_pipeline`: PDF-Extraktion für LAV-Daten
+- `services/api`: GraphQL API (Serverless, Platzhalter)
+- `services/ml`: FastAPI Prediction Service (Platzhalter)
+- `infra/supabase`: Datenbankschema & Seed-Richtung
 - `files/index.html`: frühes UI-Prototyping
 
-## Architektur-Dokument (Soll + Ist)
-- Zielarchitektur und aktueller Umsetzungsstand sind in `docs/system-architecture.md` als **Soll + Ist** strukturiert dokumentiert.
-- Die Roadmap mit den nächsten Schritten ist dort unter **Roadmap / Nächste Schritte** gepflegt.
+## Nächste technische TODOs
+1. Monorepo-Tooling (pnpm + Turbo/Nx) etablieren
+2. Supabase-Projekt initialisieren und `infra/supabase/schema.sql` migrieren
+3. GraphQL-Schema (Auth, Spot-Query, Prediction-Resolver) aufsetzen
+4. FastAPI-Service mit `/predict` und `/health` bereitstellen
+5. Datenimport-Pipeline für LAV-PDFs erstellen
 
-## Nächste technische TODOs (Status)
-- ✅ Monorepo-Tooling (pnpm + Turbo) etabliert
-- ✅ Supabase-Migration als SQL-Datei bereitgestellt (`infra/supabase/migrations/001_init.sql`)
-- ✅ GraphQL-Schema + Resolver-Bootstrap vorhanden (`services/api`)
-- ✅ FastAPI-Service mit `/predict` und `/health` vorhanden (`services/ml/app.py`)
-- ✅ Datenimport-Pipeline Startpunkt vorhanden (`data_pipeline/import_lav_pdf.py`)
-
-## Quickstart
-### ML API
-```bash
-cd services/ml
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-uvicorn app:app --reload --port 8001
-```
-
-### GraphQL API
-```bash
-cd services/api
-pnpm install
-pnpm dev
-```
