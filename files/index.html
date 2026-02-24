@@ -8,10 +8,12 @@
       :root {
         --bg: #0b1220;
         --card: #10192b;
+        --card-alt: #0f1a2f;
         --accent: #59d0ff;
         --text: #e9f3ff;
         --muted: #9db2cc;
         --ok: #77e1a5;
+        --warn: #ffd17f;
       }
 
       * {
@@ -30,7 +32,7 @@
       }
 
       .app {
-        width: min(940px, 100%);
+        width: min(1080px, 100%);
         background: linear-gradient(160deg, rgba(89, 208, 255, 0.08), rgba(255, 255, 255, 0.01));
         border: 1px solid rgba(89, 208, 255, 0.28);
         border-radius: 20px;
@@ -42,8 +44,13 @@
         padding: 1.6rem 1.6rem 1rem;
       }
 
-      h1 {
+      h1,
+      h2,
+      h3 {
         margin: 0;
+      }
+
+      h1 {
         font-size: clamp(1.4rem, 2.8vw, 2.15rem);
       }
 
@@ -59,7 +66,7 @@
         padding: 0 1.6rem 1.6rem;
       }
 
-      @media (min-width: 760px) {
+      @media (min-width: 880px) {
         .content {
           grid-template-columns: 1.2fr 1fr;
         }
@@ -72,10 +79,56 @@
         padding: 1rem;
       }
 
+      .controls {
+        display: grid;
+        gap: 0.9rem;
+      }
+
+      .field {
+        display: grid;
+        gap: 0.35rem;
+      }
+
+      label {
+        font-weight: 600;
+        font-size: 0.95rem;
+      }
+
+      input,
+      select,
+      button {
+        border-radius: 10px;
+        border: 1px solid rgba(157, 178, 204, 0.32);
+        background: var(--card-alt);
+        color: var(--text);
+        font: inherit;
+        padding: 0.65rem 0.8rem;
+      }
+
+      button {
+        border: none;
+        background: var(--accent);
+        color: #001722;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .button-row {
+        display: flex;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+      }
+
+      .button-row button.secondary {
+        background: transparent;
+        color: var(--text);
+        border: 1px solid rgba(157, 178, 204, 0.5);
+      }
+
       .toplist {
         list-style: none;
         padding: 0;
-        margin: 0;
+        margin: 1rem 0 0;
         display: grid;
         gap: 0.7rem;
       }
@@ -83,25 +136,31 @@
       .toplist li {
         border-radius: 10px;
         background: rgba(89, 208, 255, 0.08);
-        padding: 0.75rem;
+        padding: 0.85rem;
         display: flex;
         justify-content: space-between;
         gap: 0.5rem;
       }
 
+      .meta {
+        display: block;
+        font-size: 0.88rem;
+        color: var(--muted);
+      }
+
       .score {
         color: var(--ok);
         font-weight: 700;
+        white-space: nowrap;
       }
 
-      button {
-        border: none;
-        border-radius: 10px;
-        background: var(--accent);
-        color: #001722;
-        font-weight: 700;
-        padding: 0.75rem 1rem;
-        cursor: pointer;
+      .status {
+        margin-top: 0.8rem;
+        padding: 0.6rem 0.75rem;
+        border-radius: 8px;
+        background: rgba(255, 209, 127, 0.1);
+        color: var(--warn);
+        font-size: 0.92rem;
       }
 
       .tip {
@@ -116,68 +175,195 @@
       <header>
         <h1>🎣 The Fishing Masters</h1>
         <p>
-          Deine Tagesempfehlung für Mitteldeutschland: Finde in Sekunden das beste Gewässer für
-          den heutigen Angeltag.
+          Präzisere Tagesempfehlungen für Mitteldeutschland: Gib aktuelle Bedingungen ein und erhalte
+          eine nachvollziehbare Rangliste statt Zufallswerte.
         </p>
       </header>
 
       <section class="content">
         <article class="card">
           <h2>Heute empfohlen</h2>
-          <ul class="toplist" id="results"></ul>
+          <p id="contextLine">Standort: Leipzig | Ziel: Zander | Saison: Frühling</p>
+          <ul class="toplist" id="results" aria-live="polite"></ul>
           <p class="tip" id="tip"></p>
+          <p class="status" id="statusLine"></p>
         </article>
 
         <article class="card">
           <h2>Schnellauswahl</h2>
-          <p>Aktualisiere mit den heutigen Bedingungen und erhalte eine neue Rangliste.</p>
-          <button id="refreshBtn">Empfehlung neu berechnen</button>
-          <p class="tip">Datenbasis: Wind, Luftdruck, Trübung, Temperaturen, Schonzeiten.</p>
+          <form class="controls" id="settingsForm">
+            <div class="field">
+              <label for="targetFish">Zielfisch</label>
+              <select id="targetFish" name="targetFish">
+                <option>Zander</option>
+                <option>Hecht</option>
+                <option>Karpfen</option>
+                <option>Barsch</option>
+                <option>Wels</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="wind">Wind (km/h)</label>
+              <input id="wind" name="wind" type="number" min="0" max="80" value="14" />
+            </div>
+
+            <div class="field">
+              <label for="waterTemp">Wassertemperatur (°C)</label>
+              <input id="waterTemp" name="waterTemp" type="number" min="0" max="30" value="13" step="0.5" />
+            </div>
+
+            <div class="field">
+              <label for="season">Saison</label>
+              <select id="season" name="season">
+                <option>Frühling</option>
+                <option>Sommer</option>
+                <option>Herbst</option>
+                <option>Winter</option>
+              </select>
+            </div>
+
+            <div class="button-row">
+              <button type="submit">Empfehlung berechnen</button>
+              <button type="button" class="secondary" id="resetBtn">Zurücksetzen</button>
+            </div>
+          </form>
+          <p class="tip">Bewertung basiert auf Eignung für Zielfisch, Wind, Wassertemperatur und Saison.</p>
         </article>
       </section>
     </main>
 
     <script>
       const waters = [
-        { name: 'Goitzschesee (Sachsen-Anhalt)', score: 92, fish: 'Barsch & Zander' },
-        { name: 'Bleilochtalsperre (Thüringen)', score: 88, fish: 'Hecht & Wels' },
-        { name: 'Cospudener See (Sachsen)', score: 83, fish: 'Hecht & Karpfen' },
-        { name: 'Saale bei Halle', score: 79, fish: 'Aal & Döbel' }
+        {
+          name: 'Goitzschesee (Sachsen-Anhalt)',
+          base: 80,
+          species: ['Zander', 'Barsch'],
+          tempRange: [9, 18],
+          windTolerance: [6, 28],
+          seasonBoost: { Frühling: 4, Sommer: 2, Herbst: 6, Winter: -4 }
+        },
+        {
+          name: 'Bleilochtalsperre (Thüringen)',
+          base: 77,
+          species: ['Hecht', 'Wels'],
+          tempRange: [10, 22],
+          windTolerance: [4, 24],
+          seasonBoost: { Frühling: 1, Sommer: 3, Herbst: 7, Winter: -6 }
+        },
+        {
+          name: 'Cospudener See (Sachsen)',
+          base: 74,
+          species: ['Hecht', 'Karpfen'],
+          tempRange: [12, 25],
+          windTolerance: [3, 22],
+          seasonBoost: { Frühling: 3, Sommer: 5, Herbst: 1, Winter: -8 }
+        },
+        {
+          name: 'Saale bei Halle',
+          base: 72,
+          species: ['Wels', 'Barsch'],
+          tempRange: [8, 20],
+          windTolerance: [5, 26],
+          seasonBoost: { Frühling: 5, Sommer: 1, Herbst: 4, Winter: -3 }
+        }
       ];
 
-      const tipPool = [
-        'Morgenfenster zwischen 06:20 und 08:00 ist heute am stärksten.',
-        'Bei Wind aus West funktioniert ein langsamer Jig oft besser.',
-        'Trüberes Wasser: auffällige Farben und mehr Druckwellen einsetzen.',
-        'Bei stabilem Luftdruck sind längere Standplätze am Scharkantenrand sinnvoll.'
-      ];
+      const tipByFish = {
+        Zander: 'Nutze in der Dämmerung schlanke Gummifische dicht am Grund.',
+        Hecht: 'Bei Windkanten funktionieren größere Köder mit klarem Druckprofil.',
+        Karpfen: 'Stabile Futterplätze lohnen sich, wenn die Temperatur über 12°C liegt.',
+        Barsch: 'Suche Strukturkanten und führe kleine Köder mit kurzen Pausen.',
+        Wels: 'In Flussnähe sind tiefe Rinnen und langsame Führung oft effektiv.'
+      };
 
-      function renderRanking() {
-        const shuffled = [...waters]
-          .map((item) => ({ ...item, score: Math.max(70, Math.min(96, item.score + Math.round((Math.random() - 0.5) * 8))) }))
+      function clampScore(value) {
+        return Math.max(55, Math.min(97, Math.round(value)));
+      }
+
+      function rangePenalty(value, min, max) {
+        if (value < min) return (min - value) * 1.5;
+        if (value > max) return (value - max) * 1.2;
+        return 0;
+      }
+
+      function calculateSpotScore(spot, input) {
+        let score = spot.base;
+
+        if (spot.species.includes(input.targetFish)) {
+          score += 10;
+        } else {
+          score -= 7;
+        }
+
+        score += spot.seasonBoost[input.season] ?? 0;
+        score -= rangePenalty(input.waterTemp, spot.tempRange[0], spot.tempRange[1]);
+        score -= rangePenalty(input.wind, spot.windTolerance[0], spot.windTolerance[1]) * 0.8;
+
+        return clampScore(score);
+      }
+
+      function getInputs() {
+        const targetFish = document.getElementById('targetFish').value;
+        const wind = Number(document.getElementById('wind').value);
+        const waterTemp = Number(document.getElementById('waterTemp').value);
+        const season = document.getElementById('season').value;
+        return { targetFish, wind, waterTemp, season };
+      }
+
+      function buildRanking(input) {
+        return waters
+          .map((spot) => ({
+            ...spot,
+            score: calculateSpotScore(spot, input)
+          }))
           .sort((a, b) => b.score - a.score);
+      }
 
+      function renderRanking(input) {
+        const ranking = buildRanking(input);
         const list = document.getElementById('results');
         list.innerHTML = '';
 
-        shuffled.slice(0, 3).forEach((spot, idx) => {
+        ranking.slice(0, 3).forEach((spot, idx) => {
           const li = document.createElement('li');
+          const compatible = spot.species.includes(input.targetFish)
+            ? `Zielfisch passt (${input.targetFish})`
+            : `Alternative Arten: ${spot.species.join(', ')}`;
           li.innerHTML = `
             <div>
-              <strong>#${idx + 1} ${spot.name}</strong><br />
-              <small>${spot.fish}</small>
+              <strong>#${idx + 1} ${spot.name}</strong>
+              <span class="meta">${compatible}</span>
             </div>
             <span class="score">${spot.score}% Match</span>
           `;
           list.appendChild(li);
         });
 
-        const randomTip = tipPool[Math.floor(Math.random() * tipPool.length)];
-        document.getElementById('tip').textContent = `Pro-Tipp: ${randomTip}`;
+        const best = ranking[0];
+        document.getElementById('tip').textContent = `Pro-Tipp (${input.targetFish}): ${tipByFish[input.targetFish]}`;
+        document.getElementById('contextLine').textContent = `Zielfisch: ${input.targetFish} | Saison: ${input.season} | Wind: ${input.wind} km/h | Wasser: ${input.waterTemp}°C`;
+        document.getElementById('statusLine').textContent = `Top-Empfehlung: ${best.name} mit ${best.score}% Match.`;
       }
 
-      document.getElementById('refreshBtn').addEventListener('click', renderRanking);
-      renderRanking();
+      function resetForm() {
+        document.getElementById('targetFish').value = 'Zander';
+        document.getElementById('wind').value = '14';
+        document.getElementById('waterTemp').value = '13';
+        document.getElementById('season').value = 'Frühling';
+      }
+
+      document.getElementById('settingsForm').addEventListener('submit', (event) => {
+        event.preventDefault();
+        renderRanking(getInputs());
+      });
+
+      document.getElementById('resetBtn').addEventListener('click', () => {
+        resetForm();
+        renderRanking(getInputs());
+      });
+
+      renderRanking(getInputs());
     </script>
   </body>
 </html>
