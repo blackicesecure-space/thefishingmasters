@@ -10,6 +10,14 @@ Wir bauen eine datengetriebene App, die Anglern täglich sagt, **wohin** sie fah
 - **Backend:** Supabase (PostgreSQL/Auth/Realtime), GraphQL API (Apollo auf Vercel Serverless), Python FastAPI
 - **ML/Data:** Python 3.11, scikit-learn, pandas, numpy, pdfplumber
 
+## Repository-Struktur
+- `apps/web`: Web-MVP Scope + Akzeptanzkriterien
+- `apps/mobile`: Mobile-MVP Scope
+- `services/api`: GraphQL Schema + Server-Bootstrap
+- `services/ml`: FastAPI-Startservice (`/health`, `/predict`) + Scoring-Modul
+- `infra/supabase`: Datenbankschema & Migrationen
+- `data_pipeline`: PDF-Extraktion für LAV-Daten
+- `tests`: Unit-Tests für ML-Scoring und PDF-Parser
 Siehe vollständige Spezifikation in `docs/system-architecture.md`.
 
 ## Repository-Struktur
