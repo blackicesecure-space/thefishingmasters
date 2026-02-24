@@ -30,7 +30,7 @@ Wir bauen eine datengetriebene App, die Anglern täglich sagt, **wohin** sie fah
 > Hinweis: Der aktuelle Umsetzungsstand dieser Punkte ist im Abschnitt **Status (Go-Forward)** dokumentiert.
 
 ## Status (Go-Forward)
-- ✅ Monorepo-Tooling (pnpm + Turbo) etabliert
+- ✅ Monorepo-Tooling (pnpm + Turbo/Nx) etabliert
 - ✅ Supabase-Migration bereitgestellt (`infra/supabase/migrations/001_init.sql`)
 - ✅ GraphQL-Schema + Resolver-Bootstrap vorhanden (`services/api`)
 - ✅ FastAPI-Service mit `/predict` und `/health` vorhanden (`services/ml/app.py`)
@@ -68,6 +68,10 @@ cd /workspace/thefishingmasters
 python3 -m unittest discover -s tests -p 'test_*.py'
 ```
 
+### 4) Optional: ML API vom Repo-Root starten
+```bash
+uvicorn services.ml.app:app --reload --port 8001
+```
 
 ## Merge- & Branch-Hinweis
 - Bei Merge-Konflikten gilt diese Struktur als Referenz für README-Inhalte.
