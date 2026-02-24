@@ -65,7 +65,7 @@ pnpm dev
 ### 3) Unit-Tests ausführen
 ```bash
 cd /workspace/thefishingmasters
-python3 -m unittest discover -s tests -p 'test_*.py'
+python3 -m unittest discover -s tests -t . -p 'test_*.py'
 ```
 
 ### 4) Optional: ML API vom Repo-Root starten
@@ -76,3 +76,11 @@ uvicorn services.ml.app:app --reload --port 8001
 ## Merge- & Branch-Hinweis
 - Bei Merge-Konflikten gilt diese Struktur als Referenz für README-Inhalte.
 - Detailentscheidungen leben in den jeweiligen Bereichs-READMEs (Web/Mobile/API/ML/Data).
+
+
+### Test-Discovery Troubleshooting (Windows/py launcher)
+Wenn `ImportError: Start directory is not importable: 'tests'` erscheint, stelle sicher, dass du im Repo-Root bist und nutze:
+
+```bash
+python3 -m unittest discover -s tests -t . -p 'test_*.py'
+```

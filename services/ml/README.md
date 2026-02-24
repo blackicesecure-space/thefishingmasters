@@ -29,6 +29,7 @@ curl -X POST http://127.0.0.1:8001/predict \
 ```bash
 cd /workspace/thefishingmasters
 python3 -m unittest tests/test_scoring.py -v
+python3 -m unittest discover -s tests -t . -p 'test_*.py'
 ```
 
 ## Import-Hinweis
