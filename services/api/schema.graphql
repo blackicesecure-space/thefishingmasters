@@ -1,0 +1,48 @@
+scalar JSON
+
+type Spot {
+  id: ID!
+  name: String!
+  latitude: Float!
+  longitude: Float!
+  bundesland: String!
+  gewaesserTyp: String!
+  fishSpecies: [String!]!
+  avgCrowdLevel: Int!
+}
+
+type Recommendation {
+  spot: Spot!
+  score: Float!
+  reason: String!
+  bestWindow: String!
+}
+
+type Health {
+  status: String!
+}
+
+input RecommendationInput {
+  targetSpecies: String!
+  waterTempC: Float!
+  windKmh: Float!
+  pressureHpa: Float!
+  moonPhase: Float!
+  season: String!
+}
+
+type Query {
+  health: Health!
+  spots(bundesland: String, fishSpecies: String): [Spot!]!
+  recommendations(input: RecommendationInput!): [Recommendation!]!
+}
+
+input FeedbackInput {
+  spotId: ID!
+  success: Boolean!
+  note: String
+}
+
+type Mutation {
+  submitFeedback(input: FeedbackInput!): Boolean!
+}
