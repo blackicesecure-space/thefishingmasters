@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Fishing Masters | Wohin heute angeln?</title>
+    <style>
+      :root {
+        --bg: #0b1220;
+        --card: #10192b;
+        --accent: #59d0ff;
+        --text: #e9f3ff;
+        --muted: #9db2cc;
+        --ok: #77e1a5;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        color: var(--text);
+        background: radial-gradient(circle at 20% 0%, #1b2f52 0%, var(--bg) 45%);
+        display: grid;
+        place-items: center;
+        padding: 1.25rem;
+      }
+
+      .app {
+        width: min(940px, 100%);
+        background: linear-gradient(160deg, rgba(89, 208, 255, 0.08), rgba(255, 255, 255, 0.01));
+        border: 1px solid rgba(89, 208, 255, 0.28);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+      }
+
+      header {
+        padding: 1.6rem 1.6rem 1rem;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(1.4rem, 2.8vw, 2.15rem);
+      }
+
+      p {
+        margin: 0.65rem 0 0;
+        color: var(--muted);
+      }
+
+      .content {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 0 1.6rem 1.6rem;
+      }
+
+      @media (min-width: 760px) {
+        .content {
+          grid-template-columns: 1.2fr 1fr;
+        }
+      }
+
+      .card {
+        background: var(--card);
+        border: 1px solid rgba(157, 178, 204, 0.2);
+        border-radius: 14px;
+        padding: 1rem;
+      }
+
+      .toplist {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        gap: 0.7rem;
+      }
+
+      .toplist li {
+        border-radius: 10px;
+        background: rgba(89, 208, 255, 0.08);
+        padding: 0.75rem;
+        display: flex;
+        justify-content: space-between;
+        gap: 0.5rem;
+      }
+
+      .score {
+        color: var(--ok);
+        font-weight: 700;
+      }
+
+      button {
+        border: none;
+        border-radius: 10px;
+        background: var(--accent);
+        color: #001722;
+        font-weight: 700;
+        padding: 0.75rem 1rem;
+        cursor: pointer;
+      }
+
+      .tip {
+        margin-top: 1rem;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app">
+      <header>
+        <h1>🎣 The Fishing Masters</h1>
+        <p>
+          Deine Tagesempfehlung für Mitteldeutschland: Finde in Sekunden das beste Gewässer für
+          den heutigen Angeltag.
+        </p>
+      </header>
+
+      <section class="content">
+        <article class="card">
+          <h2>Heute empfohlen</h2>
+          <ul class="toplist" id="results"></ul>
+          <p class="tip" id="tip"></p>
+        </article>
+
+        <article class="card">
+          <h2>Schnellauswahl</h2>
+          <p>Aktualisiere mit den heutigen Bedingungen und erhalte eine neue Rangliste.</p>
+          <button id="refreshBtn">Empfehlung neu berechnen</button>
+          <p class="tip">Datenbasis: Wind, Luftdruck, Trübung, Temperaturen, Schonzeiten.</p>
+        </article>
+      </section>
+    </main>
+
+    <script>
+      const waters = [
+        { name: 'Goitzschesee (Sachsen-Anhalt)', score: 92, fish: 'Barsch & Zander' },
+        { name: 'Bleilochtalsperre (Thüringen)', score: 88, fish: 'Hecht & Wels' },
+        { name: 'Cospudener See (Sachsen)', score: 83, fish: 'Hecht & Karpfen' },
+        { name: 'Saale bei Halle', score: 79, fish: 'Aal & Döbel' }
+      ];
+
+      const tipPool = [
+        'Morgenfenster zwischen 06:20 und 08:00 ist heute am stärksten.',
+        'Bei Wind aus West funktioniert ein langsamer Jig oft besser.',
+        'Trüberes Wasser: auffällige Farben und mehr Druckwellen einsetzen.',
+        'Bei stabilem Luftdruck sind längere Standplätze am Scharkantenrand sinnvoll.'
+      ];
+
+      function renderRanking() {
+        const shuffled = [...waters]
+          .map((item) => ({ ...item, score: Math.max(70, Math.min(96, item.score + Math.round((Math.random() - 0.5) * 8))) }))
+          .sort((a, b) => b.score - a.score);
+
+        const list = document.getElementById('results');
+        list.innerHTML = '';
+
+        shuffled.slice(0, 3).forEach((spot, idx) => {
+          const li = document.createElement('li');
+          li.innerHTML = `
+            <div>
+              <strong>#${idx + 1} ${spot.name}</strong><br />
+              <small>${spot.fish}</small>
+            </div>
+            <span class="score">${spot.score}% Match</span>
+          `;
+          list.appendChild(li);
+        });
+
+        const randomTip = tipPool[Math.floor(Math.random() * tipPool.length)];
+        document.getElementById('tip').textContent = `Pro-Tipp: ${randomTip}`;
+      }
+
+      document.getElementById('refreshBtn').addEventListener('click', renderRanking);
+      renderRanking();
+    </script>
+  </body>
+</html>
