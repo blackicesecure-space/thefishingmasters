@@ -66,6 +66,13 @@ py -m uvicorn app:app --reload --port 8001
 ```
 
 ### 2) GraphQL API starten
+**Empfohlen (Repo-Root, Turbo Workspace):**
+```bash
+pnpm install
+pnpm dev --filter api
+```
+
+**Direkt im Service-Ordner:**
 ```bash
 cd services/api
 pnpm install

@@ -11,10 +11,24 @@
 - ML-Bridge in `Query.recommendations` via `/predict`
 
 ## Lokal starten
+**Empfohlen (Repo-Root):**
+```bash
+pnpm install
+pnpm dev --filter api
+```
+
+**Direkt im Service-Ordner:**
 ```bash
 cd services/api
 pnpm install
 pnpm dev
+```
+
+**Windows (PowerShell):**
+```powershell
+Set-Location <REPO_ROOT>
+pnpm install
+pnpm dev --filter api
 ```
 
 ## Geplanter Resolver-Flow
@@ -30,3 +44,9 @@ pnpm dev
 
 ## Konfiguration
 - `ML_API_BASE_URL` (optional, Default: `http://127.0.0.1:8001`)
+
+
+## Troubleshooting (Windows)
+- Fehler `ENOENT ... package.json` bedeutet: aktuelles Verzeichnis enthält keine `package.json` (falscher Ordner oder alter Checkout).
+- Prüfen mit `Get-Location` und `Get-ChildItem .\package.json`.
+- Falls Datei fehlt: `Set-Location <REPO_ROOT>` und `git pull`, dann erneut `pnpm install` + `pnpm dev --filter api`.
