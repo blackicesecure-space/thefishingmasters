@@ -1,6 +1,7 @@
 # Mobile App (Expo + React Native)
 
 ## Geplante Features (MVP)
+Geplante Features (MVP):
 - GPS-Lokalisierung
 - Mapbox-Map mit Spot-Layern
 - Push-Benachrichtigungen
@@ -30,9 +31,3 @@
 - Empfehlung kann aus der App gestartet und angezeigt werden.
 - Spot-Detail ist aus Karte und Liste erreichbar.
 - Feedback kann offline gepuffert und später synchronisiert werden.
-
-
-## Merge-Hinweis
-- Diese Datei beschreibt nur Mobile-spezifischen Scope.
-- Für gemeinsame Setup-/Tooling-Kommandos gilt der Root-`README.md` als kanonische Quelle.
-

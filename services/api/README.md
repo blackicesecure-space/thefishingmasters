@@ -11,24 +11,10 @@
 - ML-Bridge in `Query.recommendations` via `/predict`
 
 ## Lokal starten
-**Empfohlen (Repo-Root):**
-```bash
-pnpm install
-pnpm dev --filter api
-```
-
-**Direkt im Service-Ordner:**
 ```bash
 cd services/api
 pnpm install
 pnpm dev
-```
-
-**Windows (PowerShell):**
-```powershell
-Set-Location <REPO_ROOT>
-pnpm install
-pnpm dev --filter api
 ```
 
 ## Geplanter Resolver-Flow
@@ -44,15 +30,10 @@ pnpm dev --filter api
 
 ## Konfiguration
 - `ML_API_BASE_URL` (optional, Default: `http://127.0.0.1:8001`)
+Geplanter Scope (MVP):
+- Auth-geschützte Queries für Spot-Suche/Filter
+- Mutation für Session-Feedback (Erfolg/Misserfolg)
+- Resolver-Brücke zum ML-Service (`services/ml`)
 
-
-## Troubleshooting (Windows)
-- Fehler `ENOENT ... package.json` bedeutet: aktuelles Verzeichnis enthält keine `package.json` (falscher Ordner oder alter Checkout).
-- Prüfen mit `Get-Location` und `Get-ChildItem .\package.json`.
-- Falls Datei fehlt: `Set-Location <REPO_ROOT>` und `git pull`, dann erneut `pnpm install` + `pnpm dev --filter api`.
-
-
-## Merge-Hinweis
-- API-spezifische Details bleiben hier.
-- Workspace- und plattformübergreifende Basis-Kommandos werden vom Root-`README.md` gespiegelt.
-
+Nächster Schritt:
+- Apollo Server + schema-first Setup mit `Query.spots`, `Query.recommendations`, `Mutation.submitFeedback`.
