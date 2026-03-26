@@ -242,25 +242,33 @@ const resolvers = {
     dashboard: async () => {
       const db = getSupabase();
 
-      const { data: feedback, error } = await db
+      // Aggregate stats from ALL feedback rows
+      const { data: allFeedback, error: allError } = await db
+        .from('feedback')
+        .select('success');
+
+      if (allError) throw new Error(`DB error: ${allError.message}`);
+
+      const all = allFeedback ?? [];
+      const successCount = all.filter((f) => f.success).length;
+      const failCount = all.filter((f) => !f.success).length;
+      const total = successCount + failCount;
+
+      // Recent feedback limited to 10 for display
+      const { data: recent, error: recentError } = await db
         .from('feedback')
         .select('id, spot_id, success, note, created_at')
         .order('created_at', { ascending: false })
-        .limit(20);
+        .limit(10);
 
-      if (error) throw new Error(`DB error: ${error.message}`);
-
-      const entries = feedback ?? [];
-      const successCount = entries.filter((f) => f.success).length;
-      const failCount = entries.filter((f) => !f.success).length;
-      const total = successCount + failCount;
+      if (recentError) throw new Error(`DB error: ${recentError.message}`);
 
       return {
         totalSessions: total,
         successCount,
         failCount,
         hitRate: total > 0 ? Math.round((successCount / total) * 100) : 0,
-        recentFeedback: entries.slice(0, 10).map((f) => ({
+        recentFeedback: (recent ?? []).map((f) => ({
           id: f.id,
           spotId: f.spot_id,
           success: f.success,

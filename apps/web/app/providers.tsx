@@ -13,7 +13,7 @@ import { useMemo } from "react";
 
 function createApolloClient() {
   const httpLink = new HttpLink({
-    uri: process.env.NEXT_PUBLIC_GRAPHQL_URL ?? "http://localhost:4000",
+    uri: process.env.NEXT_PUBLIC_GRAPHQL_URL ?? "/api/graphql",
   });
 
   const retryLink = new RetryLink({

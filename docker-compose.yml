@@ -35,10 +35,11 @@ services:
   web:
     build:
       context: ./apps/web
-      args:
-        NEXT_PUBLIC_GRAPHQL_URL: http://localhost:4000
+      # No NEXT_PUBLIC_GRAPHQL_URL build arg — app uses /api/graphql rewrite
     ports:
       - "3000:3000"
+    environment:
+      - GRAPHQL_BACKEND_URL=http://api:4000
     depends_on:
       - api
     restart: unless-stopped
