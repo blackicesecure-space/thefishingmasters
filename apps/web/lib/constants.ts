@@ -1,28 +1,14 @@
-/** All fish species available for recommendation. */
-export const FISH_SPECIES = [
-  // Raubfische
-  "Zander",
-  "Hecht",
-  "Barsch",
-  "Wels",
-  "Rapfen",
-  // Friedfische
-  "Karpfen",
-  "Schleie",
-  "Barbe",
-  "Döbel",
-  // Salmoniden
-  "Forelle",
-  // Aal
-  "Aal",
-  // Köderfische
-  "Köderfisch",
-  "Rotauge",
-  "Rotfeder",
-  "Ukelei",
-  "Gründling",
-  "Güster",
-] as const;
+/** Fish species grouped by category. */
+export const FISH_GROUPS = {
+  Raubfische: ["Zander", "Hecht", "Barsch", "Wels", "Rapfen"],
+  Friedfische: ["Karpfen", "Schleie", "Barbe", "Döbel"],
+  Salmoniden: ["Forelle"],
+  Sonstige: ["Aal"],
+  "Köderfische": ["Köderfisch", "Rotauge", "Rotfeder", "Ukelei", "Gründling", "Güster"],
+} as const;
+
+/** All fish species available for recommendation (flat list). */
+export const FISH_SPECIES = Object.values(FISH_GROUPS).flat();
 
 export const BUNDESLAENDER = [
   "Sachsen-Anhalt",

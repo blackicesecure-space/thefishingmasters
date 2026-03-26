@@ -12,15 +12,26 @@ interface Spot {
   avgCrowdLevel: number;
 }
 
+interface Breakdown {
+  bite: number;
+  quality: number;
+  convenience: number;
+  crowd: number;
+  personal: number;
+  total: number;
+  reasons: string[];
+}
+
 interface Props {
   rank: number;
   spot: Spot;
   score: number;
   reason: string;
   bestWindow: string;
+  breakdown: Breakdown;
 }
 
-export default function SpotCard({ rank, spot, score, reason, bestWindow }: Props) {
+export default function SpotCard({ rank, spot, score, reason, bestWindow, breakdown }: Props) {
   const rankColors = ["text-accent", "text-warning", "text-text-muted"];
   const rankBorders = ["border-accent/40", "border-warning/40", "border-border"];
 
@@ -45,11 +56,11 @@ export default function SpotCard({ rank, spot, score, reason, bestWindow }: Prop
 
       {/* Score Breakdown Bars */}
       <div className="space-y-1.5 mb-4">
-        <ScoreBar label="Beißchance" value={score * 0.4} max={40} color="bg-accent" />
-        <ScoreBar label="Qualität" value={score * 0.25} max={25} color="bg-success" />
-        <ScoreBar label="Convenience" value={score * 0.15} max={15} color="bg-warning" />
-        <ScoreBar label="Crowd" value={score * 0.15} max={15} color="bg-accent-dim" />
-        <ScoreBar label="Personal" value={score * 0.05} max={5} color="bg-text-muted" />
+        <ScoreBar label="Beißchance" value={breakdown.bite} max={40} color="bg-accent" />
+        <ScoreBar label="Qualität" value={breakdown.quality} max={25} color="bg-success" />
+        <ScoreBar label="Convenience" value={breakdown.convenience} max={15} color="bg-warning" />
+        <ScoreBar label="Crowd" value={breakdown.crowd} max={15} color="bg-accent-dim" />
+        <ScoreBar label="Personal" value={breakdown.personal} max={5} color="bg-text-muted" />
       </div>
 
       {/* Reason */}

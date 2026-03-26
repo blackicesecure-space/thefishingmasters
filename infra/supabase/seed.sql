@@ -3,6 +3,10 @@
 -- Sachsen-Anhalt, Thueringen, Sachsen
 -- ============================================================
 
+-- Ensure name+bundesland is unique so ON CONFLICT works
+alter table public.spots add constraint spots_name_bundesland_unique
+  unique (name, bundesland);
+
 insert into public.spots (name, latitude, longitude, bundesland, gewaesser_typ, fischarten, regelung, angelkarte_preis_tag, flaeche_ha, max_tiefe_m, strukturen, parkplatz, beschreibung) values
 
 -- ===================== SACHSEN-ANHALT =====================
@@ -218,4 +222,4 @@ insert into public.spots (name, latitude, longitude, bundesland, gewaesser_typ, 
  '["Inseln","Buchten","Steinschuettungen","Flachwasser"]', true,
  'Grosser See im Lausitzer Seenland. Vielversprechendes Raubfischgewaesser.')
 
-on conflict do nothing;
+on conflict (name, bundesland) do nothing;

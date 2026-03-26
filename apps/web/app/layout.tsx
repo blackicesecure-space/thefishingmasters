@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { ApolloWrapper } from "./providers";
 import "./globals.css";
 
@@ -19,16 +20,16 @@ export default function RootLayout({
         <ApolloWrapper>
           <header className="border-b border-border">
             <nav className="max-w-content mx-auto px-4 py-4 flex items-center justify-between">
-              <a href="/" className="text-xl font-bold text-accent">
+              <Link href="/" className="text-xl font-bold text-accent">
                 The Fishing Masters
-              </a>
+              </Link>
               <div className="flex gap-4 text-sm text-text-muted">
-                <a href="/flow" className="hover:text-accent transition-colors">
+                <Link href="/flow" className="hover:text-accent transition-colors">
                   Empfehlung
-                </a>
-                <a href="/feedback" className="hover:text-accent transition-colors">
+                </Link>
+                <Link href="/feedback" className="hover:text-accent transition-colors">
                   Feedback
-                </a>
+                </Link>
               </div>
             </nav>
           </header>

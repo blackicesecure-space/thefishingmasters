@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { FISH_SPECIES, BUNDESLAENDER } from "@/lib/constants";
+import { FISH_GROUPS, BUNDESLAENDER } from "@/lib/constants";
 import type { FlowState } from "@/app/flow/page";
 
 interface Props {
@@ -34,27 +34,13 @@ export default function StepFish({ onNext, initial }: Props) {
             required
           >
             <option value="">Fischart wählen...</option>
-            <optgroup label="Raubfische">
-              {FISH_SPECIES.filter((_, i) => i < 5).map((f) => (
-                <option key={f} value={f}>{f}</option>
-              ))}
-            </optgroup>
-            <optgroup label="Friedfische">
-              {FISH_SPECIES.filter((_, i) => i >= 5 && i < 9).map((f) => (
-                <option key={f} value={f}>{f}</option>
-              ))}
-            </optgroup>
-            <optgroup label="Salmoniden">
-              <option value="Forelle">Forelle</option>
-            </optgroup>
-            <optgroup label="Sonstige">
-              <option value="Aal">Aal</option>
-            </optgroup>
-            <optgroup label="Köderfische">
-              {FISH_SPECIES.filter((_, i) => i >= 11).map((f) => (
-                <option key={f} value={f}>{f}</option>
-              ))}
-            </optgroup>
+            {Object.entries(FISH_GROUPS).map(([group, species]) => (
+              <optgroup key={group} label={group}>
+                {species.map((f) => (
+                  <option key={f} value={f}>{f}</option>
+                ))}
+              </optgroup>
+            ))}
           </select>
         </div>
 

@@ -20,9 +20,9 @@ alter table public.spots
 -- Location-Index
 create index if not exists idx_spots_location on public.spots (latitude, longitude);
 
--- Profiles
+-- Profiles (FK to auth.users for RLS integration)
 create table if not exists public.profiles (
-  id uuid primary key,
+  id uuid primary key references auth.users(id) on delete cascade,
   display_name text,
   preferred_species jsonb default '[]'::jsonb,
   home_latitude decimal(9,6),

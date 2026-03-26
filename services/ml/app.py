@@ -146,7 +146,11 @@ def lunar(
 ) -> LunarResponse:
     """Get lunar phase and solunar periods for a date/location."""
     if target_date:
-        d = date.fromisoformat(target_date)
+        try:
+            d = date.fromisoformat(target_date)
+        except ValueError:
+            from fastapi import HTTPException
+            raise HTTPException(status_code=422, detail=f"Ungültiges Datum: '{target_date}'. Format: YYYY-MM-DD")
     else:
         d = date.today()
 
