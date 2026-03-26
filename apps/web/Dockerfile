@@ -7,7 +7,10 @@ RUN npm install
 
 COPY . .
 
-ARG NEXT_PUBLIC_GRAPHQL_URL=http://localhost:4000
+# NEXT_PUBLIC_GRAPHQL_URL is optional at build time.
+# If not set, the app uses /api/graphql (proxied via Next.js rewrites).
+# Pass --build-arg NEXT_PUBLIC_GRAPHQL_URL=https://api.example.com for production.
+ARG NEXT_PUBLIC_GRAPHQL_URL
 ENV NEXT_PUBLIC_GRAPHQL_URL=$NEXT_PUBLIC_GRAPHQL_URL
 
 RUN npm run build
