@@ -47,6 +47,16 @@ export default function HomePage() {
         </div>
       </div>
 
+      {/* Quick Links */}
+      <div className="flex flex-wrap gap-3 mt-2">
+        <Link href="/spots" className="btn-secondary">
+          Alle Spots ansehen
+        </Link>
+        <Link href="/dashboard" className="btn-secondary">
+          Dashboard
+        </Link>
+      </div>
+
       {/* Stats */}
       <div className="flex gap-8 text-center mt-4">
         <div>
@@ -58,7 +68,7 @@ export default function HomePage() {
           <div className="text-text-muted text-sm">Bundesländer</div>
         </div>
         <div>
-          <div className="text-3xl font-bold text-accent">16</div>
+          <div className="text-3xl font-bold text-accent">17</div>
           <div className="text-text-muted text-sm">Fischarten</div>
         </div>
       </div>

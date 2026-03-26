@@ -9,6 +9,10 @@ type Spot {
   gewaesserTyp: String!
   fishSpecies: [String!]!
   avgCrowdLevel: Int!
+  flaecheHa: Float
+  maxTiefeM: Float
+  parkplatz: Boolean!
+  beschreibung: String
 }
 
 type ScoreBreakdown {
@@ -21,16 +25,62 @@ type ScoreBreakdown {
   reasons: [String!]!
 }
 
+type LureRecommendation {
+  lures: [String!]!
+  tactics: [String!]!
+}
+
+type WeatherInfo {
+  tempCelsius: Float!
+  windSpeedKmh: Float!
+  windDirection: Int!
+  pressureHpa: Float!
+  cloudCover: Int!
+  humidity: Int!
+  precipitationMm: Float!
+  description: String!
+  icon: String!
+}
+
+type LunarInfo {
+  date: String!
+  moonPhasePct: Float!
+  moonPhaseName: String!
+  moonIllumination: Float!
+  solunarMajor1: String!
+  solunarMajor2: String!
+  solunarMinor1: String!
+  solunarMinor2: String!
+  solunarRating: Int!
+}
+
 type Recommendation {
   spot: Spot!
   score: Float!
   reason: String!
   bestWindow: String!
   breakdown: ScoreBreakdown!
+  lure: LureRecommendation!
 }
 
 type Health {
   status: String!
+}
+
+type FeedbackEntry {
+  id: ID!
+  spotId: ID!
+  success: Boolean!
+  note: String
+  createdAt: String!
+}
+
+type DashboardStats {
+  totalSessions: Int!
+  successCount: Int!
+  failCount: Int!
+  hitRate: Float!
+  recentFeedback: [FeedbackEntry!]!
 }
 
 input RecommendationInput {
@@ -43,17 +93,22 @@ input RecommendationInput {
   bundesland: String
 }
 
+input FeedbackInput {
+  spotId: ID!
+  success: Boolean!
+  note: String
+  targetSpecies: String
+  crowdLevel: Int
+}
+
 type Query {
   health: Health!
   spots(bundesland: String, fishSpecies: String): [Spot!]!
   spot(id: ID!): Spot
   recommendations(input: RecommendationInput!): [Recommendation!]!
-}
-
-input FeedbackInput {
-  spotId: ID!
-  success: Boolean!
-  note: String
+  weather(lat: Float!, lon: Float!): WeatherInfo!
+  lunar(date: String, lat: Float, lon: Float): LunarInfo!
+  dashboard: DashboardStats!
 }
 
 type Mutation {

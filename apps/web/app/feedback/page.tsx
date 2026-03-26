@@ -3,12 +3,16 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import { SPOTS_QUERY, SUBMIT_FEEDBACK } from "@/lib/graphql/queries";
+import { FISH_SPECIES } from "@/lib/constants";
+import { shortBundesland } from "@/lib/format";
 import Link from "next/link";
 
 export default function FeedbackPage() {
   const [spotId, setSpotId] = useState("");
   const [success, setSuccess] = useState<boolean | null>(null);
   const [note, setNote] = useState("");
+  const [targetSpecies, setTargetSpecies] = useState("");
+  const [crowdLevel, setCrowdLevel] = useState<number | null>(null);
   const [submitted, setSubmitted] = useState(false);
 
   const { data: spotsData, loading: spotsLoading } = useQuery(SPOTS_QUERY);
@@ -30,6 +34,8 @@ export default function FeedbackPage() {
           spotId,
           success,
           note: note || null,
+          targetSpecies: targetSpecies || null,
+          crowdLevel: crowdLevel,
         },
       },
     });
@@ -39,6 +45,8 @@ export default function FeedbackPage() {
     setSpotId("");
     setSuccess(null);
     setNote("");
+    setTargetSpecies("");
+    setCrowdLevel(null);
     setSubmitted(false);
   }
 
@@ -46,10 +54,10 @@ export default function FeedbackPage() {
     return (
       <div className="card max-w-lg mx-auto text-center py-12">
         <div className="text-4xl mb-4">
-          {success ? "🎉" : "🤷"}
+          {success ? "🎣" : "🤷"}
         </div>
         <h2 className="text-xl font-bold mb-2">
-          {success ? "Glückwunsch zum Fang!" : "Danke für dein Feedback!"}
+          {success ? "Petri Heil!" : "Danke für dein Feedback!"}
         </h2>
         <p className="text-text-muted mb-6">
           Dein Feedback hilft uns, die Empfehlungen zu verbessern.
@@ -96,10 +104,27 @@ export default function FeedbackPage() {
             {spotsData?.spots?.map(
               (spot: { id: string; name: string; bundesland: string }) => (
                 <option key={spot.id} value={spot.id}>
-                  {spot.name} ({spot.bundesland === "Thueringen" ? "TH" : spot.bundesland === "Sachsen-Anhalt" ? "SA" : "SN"})
+                  {spot.name} ({shortBundesland(spot.bundesland)})
                 </option>
               )
             )}
+          </select>
+        </div>
+
+        {/* Target Species */}
+        <div>
+          <label className="block text-sm text-text-muted mb-1.5">
+            Zielfisch (optional)
+          </label>
+          <select
+            className="select-field"
+            value={targetSpecies}
+            onChange={(e) => setTargetSpecies(e.target.value)}
+          >
+            <option value="">Keine Angabe</option>
+            {FISH_SPECIES.map((f) => (
+              <option key={f} value={f}>{f}</option>
+            ))}
           </select>
         </div>
 
@@ -134,6 +159,33 @@ export default function FeedbackPage() {
           </div>
         </div>
 
+        {/* Crowd Level */}
+        <div>
+          <label className="block text-sm text-text-muted mb-2">
+            Andrang am Wasser (optional)
+          </label>
+          <div className="flex gap-2">
+            {[0, 1, 2, 3, 4, 5].map((n) => (
+              <button
+                key={n}
+                type="button"
+                onClick={() => setCrowdLevel(n)}
+                className={`w-10 h-10 rounded-full text-sm font-medium transition-colors ${
+                  crowdLevel === n
+                    ? "bg-warning/20 border-2 border-warning text-warning"
+                    : "bg-bg border border-border text-text-muted hover:border-warning/50"
+                }`}
+              >
+                {n}
+              </button>
+            ))}
+          </div>
+          <div className="flex justify-between text-xs text-text-muted mt-1">
+            <span>Leer</span>
+            <span>Überfüllt</span>
+          </div>
+        </div>
+
         {/* Note */}
         <div>
           <label className="block text-sm text-text-muted mb-1.5">
@@ -142,10 +194,14 @@ export default function FeedbackPage() {
           <textarea
             className="input-field resize-none"
             rows={3}
+            maxLength={500}
             placeholder="z.B. Köder, Uhrzeit, besondere Bedingungen..."
             value={note}
             onChange={(e) => setNote(e.target.value)}
           />
+          <div className="text-right text-xs text-text-muted mt-1">
+            {note.length}/500
+          </div>
         </div>
       </div>
 

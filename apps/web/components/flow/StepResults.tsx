@@ -1,6 +1,7 @@
 "use client";
 
 import SpotCard from "./SpotCard";
+import { displayBundesland } from "@/lib/format";
 import type { FlowState } from "@/app/flow/page";
 
 interface Breakdown {
@@ -11,6 +12,11 @@ interface Breakdown {
   personal: number;
   total: number;
   reasons: string[];
+}
+
+interface Lure {
+  lures: string[];
+  tactics: string[];
 }
 
 interface Recommendation {
@@ -28,6 +34,7 @@ interface Recommendation {
   reason: string;
   bestWindow: string;
   breakdown: Breakdown;
+  lure: Lure;
 }
 
 interface Props {
@@ -48,11 +55,11 @@ export default function StepResults({ recommendations, state, onReset }: Props) 
     <div>
       <div className="text-center mb-8">
         <h2 className="text-2xl font-bold mb-2">
-          Top-3 Empfehlungen für{" "}
+          Top-{recommendations.length} Empfehlungen für{" "}
           <span className="text-accent">{state.targetSpecies}</span>
         </h2>
         <p className="text-text-muted text-sm">
-          {state.bundesland === "Thueringen" ? "Thüringen" : state.bundesland}{" "}
+          {displayBundesland(state.bundesland)}{" "}
           &middot; {seasonLabel[state.season] ?? state.season} &middot;{" "}
           {state.waterTempC}°C &middot; {state.windKmh} km/h Wind
         </p>
@@ -75,6 +82,7 @@ export default function StepResults({ recommendations, state, onReset }: Props) 
               reason={rec.reason}
               bestWindow={rec.bestWindow}
               breakdown={rec.breakdown}
+              lure={rec.lure}
             />
           ))}
         </div>

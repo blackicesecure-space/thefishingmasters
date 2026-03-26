@@ -1,8 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLazyQuery } from "@apollo/client";
 import { SEASONS, getCurrentSeason } from "@/lib/constants";
+import { WEATHER_QUERY, LUNAR_QUERY } from "@/lib/graphql/queries";
+import { displayBundesland, weatherEmoji, moonEmoji } from "@/lib/format";
 import type { FlowState } from "@/app/flow/page";
+
+/** Central coordinates per Bundesland for weather lookups. */
+const BUNDESLAND_COORDS: Record<string, { lat: number; lon: number }> = {
+  "Sachsen-Anhalt": { lat: 51.95, lon: 11.69 },
+  Thueringen: { lat: 50.98, lon: 11.03 },
+  Sachsen: { lat: 51.05, lon: 13.74 },
+};
 
 interface Props {
   onNext: (conditions: Partial<FlowState>) => void;
@@ -16,6 +26,35 @@ export default function StepConditions({ onNext, onBack, initial, loading }: Pro
   const [wind, setWind] = useState(initial.windKmh);
   const [season, setSeason] = useState(initial.season || getCurrentSeason());
   const [pressure, setPressure] = useState(initial.pressureHpa);
+  const [moonPhase, setMoonPhase] = useState(initial.moonPhase);
+  const [autoLoaded, setAutoLoaded] = useState(false);
+
+  // Weather & lunar auto-fetch
+  const [fetchWeather, { data: weatherData }] = useLazyQuery(WEATHER_QUERY);
+  const [fetchLunar, { data: lunarData }] = useLazyQuery(LUNAR_QUERY);
+
+  useEffect(() => {
+    const coords = BUNDESLAND_COORDS[initial.bundesland] ?? { lat: 51.3, lon: 12.0 };
+    fetchWeather({ variables: { lat: coords.lat, lon: coords.lon } });
+    fetchLunar({ variables: { lat: coords.lat, lon: coords.lon } });
+  }, [initial.bundesland, fetchWeather, fetchLunar]);
+
+  // Auto-populate when data arrives
+  useEffect(() => {
+    if (weatherData?.weather && !autoLoaded) {
+      const w = weatherData.weather;
+      setWaterTemp(Math.round(w.tempCelsius));
+      setWind(Math.round(w.windSpeedKmh));
+      setPressure(Math.round(w.pressureHpa));
+      setAutoLoaded(true);
+    }
+  }, [weatherData, autoLoaded]);
+
+  useEffect(() => {
+    if (lunarData?.lunar) {
+      setMoonPhase(Math.round(lunarData.lunar.moonPhasePct));
+    }
+  }, [lunarData]);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -24,19 +63,58 @@ export default function StepConditions({ onNext, onBack, initial, loading }: Pro
       windKmh: wind,
       season,
       pressureHpa: pressure,
-      moonPhase: 50, // Auto-calculated by ML service in production
+      moonPhase,
     });
   }
+
+  const weather = weatherData?.weather;
+  const lunar = lunarData?.lunar;
 
   return (
     <form onSubmit={handleSubmit} className="card max-w-lg mx-auto">
       <h2 className="text-xl font-bold mb-2">Schritt 2: Aktuelle Bedingungen</h2>
-      <p className="text-text-muted text-sm mb-6">
+      <p className="text-text-muted text-sm mb-4">
         Ziel: <span className="text-accent">{initial.targetSpecies}</span> in{" "}
-        <span className="text-accent">
-          {initial.bundesland === "Thueringen" ? "Thüringen" : initial.bundesland}
-        </span>
+        <span className="text-accent">{displayBundesland(initial.bundesland)}</span>
       </p>
+
+      {/* Auto-loaded context cards */}
+      {(weather || lunar) && (
+        <div className="grid grid-cols-2 gap-3 mb-6">
+          {weather && (
+            <div className="bg-bg rounded-card p-3 border border-border">
+              <div className="text-xs text-text-muted mb-1">Aktuelles Wetter</div>
+              <div className="text-lg font-bold">
+                {weatherEmoji(weather.icon)} {weather.tempCelsius.toFixed(1)}°C
+              </div>
+              <div className="text-xs text-text-muted">
+                {weather.windSpeedKmh.toFixed(0)} km/h Wind &middot; {weather.pressureHpa.toFixed(0)} hPa
+              </div>
+              <div className="text-xs text-text-muted mt-0.5">{weather.description}</div>
+            </div>
+          )}
+          {lunar && (
+            <div className="bg-bg rounded-card p-3 border border-border">
+              <div className="text-xs text-text-muted mb-1">Mondphase</div>
+              <div className="text-lg font-bold">
+                {moonEmoji(lunar.moonPhasePct)} {lunar.moonPhaseName}
+              </div>
+              <div className="text-xs text-text-muted">
+                {lunar.moonIllumination.toFixed(0)}% Beleuchtung
+              </div>
+              <div className="text-xs text-text-muted mt-0.5">
+                Solunar: {lunar.solunarMajor1}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {autoLoaded && (
+        <div className="bg-accent/10 border border-accent/20 rounded-input p-2 mb-4 text-xs text-accent text-center">
+          Werte automatisch aus aktuellen Wetterdaten geladen. Du kannst sie anpassen.
+        </div>
+      )}
 
       <div className="space-y-5">
         <div>
