@@ -11,6 +11,16 @@ type Spot {
   avgCrowdLevel: Int!
 }
 
+type ScoreBreakdown {
+  bite: Float!
+  quality: Float!
+  convenience: Float!
+  crowd: Float!
+  personal: Float!
+  total: Float!
+  reasons: [String!]!
+}
+
 type Recommendation {
   spot: Spot!
   score: Float!
