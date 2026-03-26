@@ -23,6 +23,25 @@ export const SPOTS_QUERY = gql`
   }
 `;
 
+export const SPOT_QUERY = gql`
+  query Spot($id: ID!) {
+    spot(id: $id) {
+      id
+      name
+      latitude
+      longitude
+      bundesland
+      gewaesserTyp
+      fishSpecies
+      avgCrowdLevel
+      flaecheHa
+      maxTiefeM
+      parkplatz
+      beschreibung
+    }
+  }
+`;
+
 export const RECOMMENDATIONS_QUERY = gql`
   query Recommendations($input: RecommendationInput!) {
     recommendations(input: $input) {
@@ -48,21 +67,60 @@ export const RECOMMENDATIONS_QUERY = gql`
         total
         reasons
       }
+      lure {
+        lures
+        tactics
+      }
     }
   }
 `;
 
-export const SPOT_QUERY = gql`
-  query Spot($id: ID!) {
-    spot(id: $id) {
-      id
-      name
-      latitude
-      longitude
-      bundesland
-      gewaesserTyp
-      fishSpecies
-      avgCrowdLevel
+export const WEATHER_QUERY = gql`
+  query Weather($lat: Float!, $lon: Float!) {
+    weather(lat: $lat, lon: $lon) {
+      tempCelsius
+      windSpeedKmh
+      windDirection
+      pressureHpa
+      cloudCover
+      humidity
+      precipitationMm
+      description
+      icon
+    }
+  }
+`;
+
+export const LUNAR_QUERY = gql`
+  query Lunar($date: String, $lat: Float, $lon: Float) {
+    lunar(date: $date, lat: $lat, lon: $lon) {
+      date
+      moonPhasePct
+      moonPhaseName
+      moonIllumination
+      solunarMajor1
+      solunarMajor2
+      solunarMinor1
+      solunarMinor2
+      solunarRating
+    }
+  }
+`;
+
+export const DASHBOARD_QUERY = gql`
+  query Dashboard {
+    dashboard {
+      totalSessions
+      successCount
+      failCount
+      hitRate
+      recentFeedback {
+        id
+        spotId
+        success
+        note
+        createdAt
+      }
     }
   }
 `;

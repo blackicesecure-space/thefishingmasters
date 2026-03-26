@@ -27,6 +27,12 @@ export default function RootLayout({
                 <Link href="/flow" className="hover:text-accent transition-colors">
                   Empfehlung
                 </Link>
+                <Link href="/spots" className="hover:text-accent transition-colors">
+                  Spots
+                </Link>
+                <Link href="/dashboard" className="hover:text-accent transition-colors">
+                  Dashboard
+                </Link>
                 <Link href="/feedback" className="hover:text-accent transition-colors">
                   Feedback
                 </Link>
@@ -36,7 +42,7 @@ export default function RootLayout({
           <main className="max-w-content mx-auto px-4 py-8">{children}</main>
           <footer className="border-t border-border mt-16">
             <div className="max-w-content mx-auto px-4 py-6 text-center text-xs text-text-muted">
-              The Fishing Masters &copy; 2026 – KI-Angel-Empfehlungen für
+              The Fishing Masters &copy; {new Date().getFullYear()} – KI-Angel-Empfehlungen für
               Mitteldeutschland
             </div>
           </footer>

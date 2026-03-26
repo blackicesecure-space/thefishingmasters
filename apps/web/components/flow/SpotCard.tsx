@@ -22,6 +22,11 @@ interface Breakdown {
   reasons: string[];
 }
 
+interface Lure {
+  lures: string[];
+  tactics: string[];
+}
+
 interface Props {
   rank: number;
   spot: Spot;
@@ -29,9 +34,10 @@ interface Props {
   reason: string;
   bestWindow: string;
   breakdown: Breakdown;
+  lure: Lure;
 }
 
-export default function SpotCard({ rank, spot, score, reason, bestWindow, breakdown }: Props) {
+export default function SpotCard({ rank, spot, score, reason, bestWindow, breakdown, lure }: Props) {
   const rankColors = ["text-accent", "text-warning", "text-text-muted"];
   const rankBorders = ["border-accent/40", "border-warning/40", "border-border"];
 
@@ -69,6 +75,21 @@ export default function SpotCard({ rank, spot, score, reason, bestWindow, breakd
       {/* Best Window */}
       <div className="flex items-center gap-2 mb-3">
         <span className="badge">Beste Zeit: {bestWindow}</span>
+      </div>
+
+      {/* Lure Recommendation */}
+      <div className="bg-bg rounded-input p-3 mb-3">
+        <div className="text-xs text-text-muted mb-1.5 font-medium">Köderempfehlung</div>
+        <div className="flex flex-wrap gap-1.5 mb-2">
+          {lure.lures.map((l) => (
+            <span key={l} className="text-xs bg-accent/10 text-accent px-2 py-0.5 rounded-full">
+              {l}
+            </span>
+          ))}
+        </div>
+        <div className="text-xs text-text-muted">
+          Taktik: {lure.tactics.join(", ")}
+        </div>
       </div>
 
       {/* Fish Species Tags */}

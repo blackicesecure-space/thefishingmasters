@@ -3,7 +3,14 @@ import { join } from 'node:path';
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import { getSupabase, type SpotRow } from './db/supabase.js';
-import { predictBiteProbability, checkMLHealth } from './services/ml-client.js';
+import {
+  predictBiteProbability,
+  checkMLHealth,
+  fetchWeather,
+  fetchLunar,
+  type MLWeatherResponse,
+  type MLLunarResponse,
+} from './services/ml-client.js';
 import { rankSpots } from './services/scorer.js';
 
 // ----- Types -----
@@ -22,7 +29,35 @@ type FeedbackInput = {
   spotId: string;
   success: boolean;
   note?: string;
+  targetSpecies?: string;
+  crowdLevel?: number;
 };
+
+// ----- Lure data (mirrors species_rules.py) -----
+
+const SPECIES_LURES: Record<string, { lures: string[]; tactics: string[] }> = {
+  Zander: { lures: ['Gummifisch 10-15cm', 'Wobbler (Suspender)', 'Köderfisch am System'], tactics: ['Faulenzen', 'Jiggen am Grund'] },
+  Hecht: { lures: ['Gummifisch 15-25cm', 'Jerkbait', 'Spinner 4-5'], tactics: ['Spinnfischen', 'Deadbait am Grund'] },
+  Barsch: { lures: ['Drop-Shot Wurm', 'Gummifisch 5-8cm', 'Spinner 1-3'], tactics: ['Drop-Shot', 'Ultra-Light Spinnfischen'] },
+  Karpfen: { lures: ['Boilie 15-20mm', 'Mais', 'Tigernuss'], tactics: ['Grundangeln mit Haar-Rig', 'Method Feeder'] },
+  Aal: { lures: ['Tauwurm', 'Köderfisch (klein)', 'Wurmbündel'], tactics: ['Grundangeln', 'Legangeln'] },
+  Forelle: { lures: ['Spinner 1-2', 'Wobbler 3-5cm', 'Kunstfliege'], tactics: ['Spinnfischen', 'Fliegenfischen'] },
+  Wels: { lures: ['Köderfisch gross', 'Tauwurmbündel', 'Pellet'], tactics: ['Grundangeln', 'Klopfen/Wallerangeln'] },
+  Schleie: { lures: ['Made', 'Mais', 'Wurm'], tactics: ['Posenangeln', 'Method Feeder'] },
+  Barbe: { lures: ['Käse-Würfel', 'Frühstücksfleisch', 'Made'], tactics: ['Feederangeln', 'Posenangeln'] },
+  Rapfen: { lures: ['Blinker silber', 'Wobbler (Topwater)', 'Spinner 3-4'], tactics: ['Spinnfischen Oberfläche', 'Speed-Spinning'] },
+  'Döbel': { lures: ['Brot', 'Kirsche', 'Spinner klein'], tactics: ['Oberflächenangeln', 'Spinnfischen'] },
+  'Köderfisch': { lures: ['Made', 'Wurm (klein)', 'Brot'], tactics: ['Stippen', 'Posenangeln flach'] },
+  Rotauge: { lures: ['Made', 'Wurm (klein)', 'Mais'], tactics: ['Posenangeln', 'Feederangeln'] },
+  Rotfeder: { lures: ['Brot', 'Made', 'Teig'], tactics: ['Oberflächenangeln', 'Posenangeln flach'] },
+  Ukelei: { lures: ['Made (einzeln)', 'Brotflocke', 'Mini-Teig'], tactics: ['Stippen Oberfläche', 'Posenangeln flach'] },
+  'Gründling': { lures: ['Wurm (klein)', 'Made', 'Mistwurm'], tactics: ['Posenangeln Grund', 'Leichte Grundmontage'] },
+  'Güster': { lures: ['Made', 'Wurm', 'Mais'], tactics: ['Feederangeln', 'Posenangeln'] },
+};
+
+function getLureRecommendation(species: string): { lures: string[]; tactics: string[] } {
+  return SPECIES_LURES[species] ?? { lures: ['Universalköder'], tactics: ['Grundangeln'] };
+}
 
 // ----- Schema -----
 
@@ -40,6 +75,38 @@ function mapSpot(row: SpotRow) {
     gewaesserTyp: row.gewaesser_typ,
     fishSpecies: row.fischarten,
     avgCrowdLevel: row.avg_crowd_level,
+    flaecheHa: row.flaeche_ha,
+    maxTiefeM: row.max_tiefe_m,
+    parkplatz: row.parkplatz,
+    beschreibung: row.beschreibung,
+  };
+}
+
+function mapWeather(w: MLWeatherResponse) {
+  return {
+    tempCelsius: w.temp_celsius,
+    windSpeedKmh: w.wind_speed_kmh,
+    windDirection: w.wind_direction,
+    pressureHpa: w.pressure_hpa,
+    cloudCover: w.cloud_cover,
+    humidity: w.humidity,
+    precipitationMm: w.precipitation_mm,
+    description: w.description,
+    icon: w.icon,
+  };
+}
+
+function mapLunar(l: MLLunarResponse) {
+  return {
+    date: l.date,
+    moonPhasePct: l.moon_phase_pct,
+    moonPhaseName: l.moon_phase_name,
+    moonIllumination: l.moon_illumination,
+    solunarMajor1: l.solunar_major_1,
+    solunarMajor2: l.solunar_major_2,
+    solunarMinor1: l.solunar_minor_1,
+    solunarMinor2: l.solunar_minor_2,
+    solunarRating: l.solunar_rating,
   };
 }
 
@@ -120,13 +187,87 @@ const resolvers = {
         3
       );
 
+      const lure = getLureRecommendation(input.targetSpecies);
+
       return ranked.map((r) => ({
         spot: mapSpot(r.spot),
         score: r.score,
         breakdown: r.breakdown,
         reason: r.reason,
         bestWindow: r.bestWindow,
+        lure,
       }));
+    },
+
+    weather: async (_: unknown, args: { lat: number; lon: number }) => {
+      try {
+        const data = await fetchWeather(args.lat, args.lon);
+        return mapWeather(data);
+      } catch {
+        // Fallback weather
+        return {
+          tempCelsius: 14.0,
+          windSpeedKmh: 10.0,
+          windDirection: 0,
+          pressureHpa: 1013.0,
+          cloudCover: 50,
+          humidity: 65,
+          precipitationMm: 0,
+          description: 'Keine Wetterdaten verfügbar',
+          icon: '03d',
+        };
+      }
+    },
+
+    lunar: async (_: unknown, args: { date?: string; lat?: number; lon?: number }) => {
+      try {
+        const data = await fetchLunar(args.date ?? undefined, args.lat ?? 51.3, args.lon ?? 12.0);
+        return mapLunar(data);
+      } catch {
+        // Fallback lunar data
+        return {
+          date: new Date().toISOString().split('T')[0],
+          moonPhasePct: 50,
+          moonPhaseName: 'Nicht verfügbar',
+          moonIllumination: 50,
+          solunarMajor1: '06:00-08:00',
+          solunarMajor2: '18:00-20:00',
+          solunarMinor1: '12:00-13:00',
+          solunarMinor2: '00:00-01:00',
+          solunarRating: 3,
+        };
+      }
+    },
+
+    dashboard: async () => {
+      const db = getSupabase();
+
+      const { data: feedback, error } = await db
+        .from('feedback')
+        .select('id, spot_id, success, note, created_at')
+        .order('created_at', { ascending: false })
+        .limit(20);
+
+      if (error) throw new Error(`DB error: ${error.message}`);
+
+      const entries = feedback ?? [];
+      const successCount = entries.filter((f) => f.success).length;
+      const failCount = entries.filter((f) => !f.success).length;
+      const total = successCount + failCount;
+
+      return {
+        totalSessions: total,
+        successCount,
+        failCount,
+        hitRate: total > 0 ? Math.round((successCount / total) * 100) : 0,
+        recentFeedback: entries.slice(0, 10).map((f) => ({
+          id: f.id,
+          spotId: f.spot_id,
+          success: f.success,
+          note: f.note,
+          createdAt: f.created_at,
+        })),
+      };
     },
   },
 
@@ -139,7 +280,9 @@ const resolvers = {
         spot_id: input.spotId,
         success: input.success,
         note: input.note ?? null,
-        user_id: null,  // Anonymous feedback allowed; auth users set via RLS context
+        target_species: input.targetSpecies ?? null,
+        crowd_level: input.crowdLevel ?? null,
+        user_id: null,
       });
 
       if (error) throw new Error(`Feedback error: ${error.message}`);
