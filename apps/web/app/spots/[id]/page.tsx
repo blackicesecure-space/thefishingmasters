@@ -29,7 +29,8 @@ export default function SpotDetailPage() {
 
   if (loading) {
     return (
-      <div className="flex justify-center py-20">
+      <div className="flex flex-col items-center justify-center gap-3 py-20">
+        <div className="w-8 h-8 border-[3px] border-accent/30 border-t-accent rounded-full animate-spin" />
         <div className="text-text-muted">Lade Spot-Daten...</div>
       </div>
     );
@@ -62,7 +63,7 @@ export default function SpotDetailPage() {
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${spot.latitude},${spot.longitude}`;
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-2xl mx-auto fade-in">
       {/* Header */}
       <div className="mb-6">
         <Link

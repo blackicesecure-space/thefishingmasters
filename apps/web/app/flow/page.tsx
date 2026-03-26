@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLazyQuery } from "@apollo/client";
 import { RECOMMENDATIONS_QUERY } from "@/lib/graphql/queries";
 import { getCurrentSeason } from "@/lib/constants";
@@ -35,13 +35,21 @@ export default function FlowPage() {
   const [state, setState] = useState<FlowState>(initialState);
   const [error, setError] = useState("");
 
-  const [fetchRecommendations, { data, loading }] = useLazyQuery(
-    RECOMMENDATIONS_QUERY,
-    {
-      onCompleted: () => setStep(3),
-      onError: (err) => setError(err.message),
+  const [fetchRecommendations, { data, loading, error: queryError }] =
+    useLazyQuery(RECOMMENDATIONS_QUERY);
+
+  // React to query completion/error via useEffect instead of callbacks
+  useEffect(() => {
+    if (data?.recommendations) {
+      setStep(3);
     }
-  );
+  }, [data]);
+
+  useEffect(() => {
+    if (queryError) {
+      setError(queryError.message);
+    }
+  }, [queryError]);
 
   function handleStep1(species: string, bundesland: string) {
     setState((s) => ({ ...s, targetSpecies: species, bundesland }));

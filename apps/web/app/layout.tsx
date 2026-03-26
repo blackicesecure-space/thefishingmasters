@@ -7,6 +7,17 @@ export const metadata: Metadata = {
   title: "The Fishing Masters – Wo angel ich heute?",
   description:
     "KI-gestützte Angelempfehlungen für Mitteldeutschland. Tägliche Top-3 Spot-Empfehlungen basierend auf Wetter, Mondphase und Beißwahrscheinlichkeit.",
+  icons: {
+    icon: "/favicon.svg",
+  },
+  openGraph: {
+    title: "The Fishing Masters",
+    description:
+      "KI-Angel-Empfehlungen für Sachsen, Sachsen-Anhalt und Thüringen. 35+ Gewässer, 17 Fischarten, Echtzeit-Wetter & Mondphasen.",
+    siteName: "The Fishing Masters",
+    locale: "de_DE",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
@@ -16,11 +27,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="de">
-      <body className="min-h-screen">
+      <body className="min-h-screen flex flex-col">
         <ApolloWrapper>
-          <header className="border-b border-border">
+          <header className="border-b border-border sticky top-0 bg-bg/95 backdrop-blur-sm z-50">
             <nav className="max-w-content mx-auto px-4 py-4 flex items-center justify-between">
-              <Link href="/" className="text-xl font-bold text-accent">
+              <Link href="/" className="text-xl font-bold text-accent hover:text-accent-dim transition-colors">
                 The Fishing Masters
               </Link>
               <div className="flex gap-4 text-sm text-text-muted">
@@ -39,11 +50,11 @@ export default function RootLayout({
               </div>
             </nav>
           </header>
-          <main className="max-w-content mx-auto px-4 py-8">{children}</main>
+          <main className="max-w-content mx-auto px-4 py-8 flex-1 w-full">{children}</main>
           <footer className="border-t border-border mt-16">
             <div className="max-w-content mx-auto px-4 py-6 text-center text-xs text-text-muted">
-              The Fishing Masters &copy; {new Date().getFullYear()} – KI-Angel-Empfehlungen für
-              Mitteldeutschland
+              The Fishing Masters &copy; {new Date().getFullYear()} &middot; Black Ice Secure &middot;
+              KI-Angel-Empfehlungen für Mitteldeutschland
             </div>
           </footer>
         </ApolloWrapper>
