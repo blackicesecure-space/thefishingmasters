@@ -23,7 +23,8 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="flex justify-center py-20">
+      <div className="flex flex-col items-center justify-center gap-3 py-20">
+        <div className="w-8 h-8 border-[3px] border-accent/30 border-t-accent rounded-full animate-spin" />
         <div className="text-text-muted">Lade Dashboard...</div>
       </div>
     );
@@ -41,7 +42,7 @@ export default function DashboardPage() {
   if (!stats) return null;
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="max-w-3xl mx-auto fade-in">
       <h1 className="text-2xl font-bold mb-2">Dashboard</h1>
       <p className="text-text-muted text-sm mb-6">
         Deine Angelstatistiken auf einen Blick
