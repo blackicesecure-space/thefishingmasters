@@ -51,22 +51,18 @@ def _moon_phase_angle(dt: datetime) -> float:
     Calculate the moon's phase angle (0-360 degrees).
     0/360 = New Moon, 180 = Full Moon.
 
-    Simplified algorithm based on Meeus ch. 49.
+    Uses the synodic month approach: fraction of the current lunar cycle
+    mapped to 0-360 degrees. More reliable than simplified elongation.
     """
+    # Known new moon reference: January 6, 2000 at 18:14 UTC
+    KNOWN_NEW_MOON_JD = 2451550.26
+    SYNODIC_MONTH = 29.53059  # days
+
     jd = _julian_day(dt)
-    # Days since J2000.0
-    T = (jd - 2451545.0) / 36525.0
-
-    # Sun's mean anomaly
-    M = math.radians(357.5291 + 35999.0503 * T)
-    # Moon's mean anomaly
-    Mp = math.radians(134.9634 + 477198.8676 * T)
-    # Moon's mean elongation
-    D = math.radians(297.8502 + 445267.1115 * T)
-
-    # Phase angle (simplified)
-    phase = D * 2  # Convert elongation to phase
-    phase_deg = math.degrees(phase) % 360
+    days_since = jd - KNOWN_NEW_MOON_JD
+    # Phase within current cycle (0.0 = new, 0.5 = full, 1.0 = new again)
+    cycle_fraction = (days_since % SYNODIC_MONTH) / SYNODIC_MONTH
+    phase_deg = cycle_fraction * 360.0
 
     return phase_deg
 

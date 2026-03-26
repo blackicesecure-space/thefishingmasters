@@ -63,6 +63,7 @@ export default function FlowPage() {
           pressureHpa: next.pressureHpa,
           moonPhase: next.moonPhase,
           season: next.season,
+          bundesland: next.bundesland || undefined,
         },
       },
     });

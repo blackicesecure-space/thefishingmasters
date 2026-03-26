@@ -39,6 +39,30 @@ export const RECOMMENDATIONS_QUERY = gql`
       score
       reason
       bestWindow
+      breakdown {
+        bite
+        quality
+        convenience
+        crowd
+        personal
+        total
+        reasons
+      }
+    }
+  }
+`;
+
+export const SPOT_QUERY = gql`
+  query Spot($id: ID!) {
+    spot(id: $id) {
+      id
+      name
+      latitude
+      longitude
+      bundesland
+      gewaesserTyp
+      fishSpecies
+      avgCrowdLevel
     }
   }
 `;

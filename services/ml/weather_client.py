@@ -58,12 +58,20 @@ def _get_cached(lat: float, lon: float) -> WeatherData | None:
         ts, data = _cache[key]
         if time.time() - ts < CACHE_TTL_S:
             return WeatherData(**data)
+        # Evict expired entry
+        del _cache[key]
     return None
 
 
 def _set_cache(lat: float, lon: float, data: WeatherData) -> None:
     key = _cache_key(lat, lon)
     _cache[key] = (time.time(), data.to_dict())
+    # Periodic cleanup: evict all expired entries when cache grows large
+    if len(_cache) > 200:
+        now = time.time()
+        expired = [k for k, (ts, _) in _cache.items() if now - ts >= CACHE_TTL_S]
+        for k in expired:
+            del _cache[k]
 
 
 def get_api_key() -> str | None:

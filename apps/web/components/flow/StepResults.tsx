@@ -3,6 +3,16 @@
 import SpotCard from "./SpotCard";
 import type { FlowState } from "@/app/flow/page";
 
+interface Breakdown {
+  bite: number;
+  quality: number;
+  convenience: number;
+  crowd: number;
+  personal: number;
+  total: number;
+  reasons: string[];
+}
+
 interface Recommendation {
   spot: {
     id: string;
@@ -17,6 +27,7 @@ interface Recommendation {
   score: number;
   reason: string;
   bestWindow: string;
+  breakdown: Breakdown;
 }
 
 interface Props {
@@ -63,6 +74,7 @@ export default function StepResults({ recommendations, state, onReset }: Props) 
               score={rec.score}
               reason={rec.reason}
               bestWindow={rec.bestWindow}
+              breakdown={rec.breakdown}
             />
           ))}
         </div>

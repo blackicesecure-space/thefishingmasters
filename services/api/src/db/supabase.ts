@@ -4,14 +4,18 @@ let client: SupabaseClient | null = null;
 
 /**
  * Returns a singleton Supabase client.
- * Reads SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY from env.
- * Falls back to SUPABASE_ANON_KEY if service role is not set.
+ * Reads SUPABASE_URL and SUPABASE_ANON_KEY from env.
+ * Uses anon key by default so RLS policies are enforced.
+ * Only uses service role key when SUPABASE_USE_SERVICE_ROLE=true.
  */
 export function getSupabase(): SupabaseClient {
   if (client) return client;
 
   const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_ANON_KEY;
+  const useServiceRole = process.env.SUPABASE_USE_SERVICE_ROLE === 'true';
+  const key = useServiceRole
+    ? (process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_ANON_KEY)
+    : (process.env.SUPABASE_ANON_KEY ?? process.env.SUPABASE_SERVICE_ROLE_KEY);
 
   if (!url || !key) {
     throw new Error(

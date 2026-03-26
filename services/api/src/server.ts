@@ -15,6 +15,7 @@ type RecommendationInput = {
   pressureHpa: number;
   moonPhase: number;
   season: string;
+  bundesland?: string;
 };
 
 type FeedbackInput = {
@@ -68,12 +69,23 @@ const resolvers = {
       return (data as SpotRow[]).map(mapSpot);
     },
 
+    spot: async (_: unknown, args: { id: string }) => {
+      const db = getSupabase();
+      const { data, error } = await db.from('spots').select('*').eq('id', args.id).single();
+      if (error) return null;
+      return data ? mapSpot(data as SpotRow) : null;
+    },
+
     recommendations: async (_: unknown, args: { input: RecommendationInput }) => {
       const { input } = args;
       const db = getSupabase();
 
-      // 1. Fetch all spots (MVP – later filter by region/radius)
-      const { data: spots, error } = await db.from('spots').select('*');
+      // 1. Fetch spots, filtered by bundesland if provided
+      let query = db.from('spots').select('*');
+      if (input.bundesland) {
+        query = query.eq('bundesland', input.bundesland);
+      }
+      const { data: spots, error } = await query;
       if (error) throw new Error(`DB error: ${error.message}`);
       if (!spots || spots.length === 0) {
         throw new Error('Keine Angelstellen in der Datenbank gefunden.');
@@ -111,6 +123,7 @@ const resolvers = {
       return ranked.map((r) => ({
         spot: mapSpot(r.spot),
         score: r.score,
+        breakdown: r.breakdown,
         reason: r.reason,
         bestWindow: r.bestWindow,
       }));
@@ -126,6 +139,7 @@ const resolvers = {
         spot_id: input.spotId,
         success: input.success,
         note: input.note ?? null,
+        user_id: null,  // Anonymous feedback allowed; auth users set via RLS context
       });
 
       if (error) throw new Error(`Feedback error: ${error.message}`);

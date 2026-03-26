@@ -7,6 +7,7 @@ for common freshwater fish species in Central Germany.
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 
 
@@ -259,14 +260,15 @@ def get_species_profile(species: str) -> SpeciesProfile | None:
     # Direct match
     if species in SPECIES_DB:
         return SPECIES_DB[species]
-    # Case-insensitive
+    # Case-insensitive match against DB keys
+    species_lower = species.lower()
     for key, profile in SPECIES_DB.items():
-        if key.lower() == species.lower():
+        if key.lower() == species_lower:
             return profile
-    # Alias
-    alias = _ALIASES.get(species)
-    if alias and alias in SPECIES_DB:
-        return SPECIES_DB[alias]
+    # Case-insensitive alias lookup
+    for alias_key, alias_target in _ALIASES.items():
+        if alias_key.lower() == species_lower:
+            return SPECIES_DB.get(alias_target)
     return None
 
 
@@ -362,5 +364,3 @@ def get_lure_recommendation(species: str, season: str) -> dict[str, list[str]]:
     }
 
 
-# Needed for moon_phase_pct calculation in compute_species_score
-import math

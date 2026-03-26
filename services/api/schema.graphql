@@ -26,6 +26,7 @@ type Recommendation {
   score: Float!
   reason: String!
   bestWindow: String!
+  breakdown: ScoreBreakdown!
 }
 
 type Health {
@@ -39,11 +40,13 @@ input RecommendationInput {
   pressureHpa: Float!
   moonPhase: Float!
   season: String!
+  bundesland: String
 }
 
 type Query {
   health: Health!
   spots(bundesland: String, fishSpecies: String): [Spot!]!
+  spot(id: ID!): Spot
   recommendations(input: RecommendationInput!): [Recommendation!]!
 }
 
