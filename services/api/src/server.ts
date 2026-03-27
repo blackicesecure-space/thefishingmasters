@@ -8,10 +8,11 @@ import {
   checkMLHealth,
   fetchWeather,
   fetchLunar,
+  fetchRecommend,
   type MLWeatherResponse,
   type MLLunarResponse,
 } from './services/ml-client.js';
-import { rankSpots } from './services/scorer.js';
+import { rankSpots, type SpeciesPreferences } from './services/scorer.js';
 
 // ----- Types -----
 
@@ -158,8 +159,10 @@ const resolvers = {
         throw new Error('Keine Angelstellen in der Datenbank gefunden.');
       }
 
-      // 2. Get ML prediction
+      // 2. Get ML prediction + species preferences
       let biteProbability: number;
+      let speciesPreferences: SpeciesPreferences | null = null;
+      let mlLure: { lures: string[]; tactics: string[] } | null = null;
       try {
         const mlResult = await predictBiteProbability({
           target_species: input.targetSpecies,
@@ -170,6 +173,14 @@ const resolvers = {
           season: input.season,
         });
         biteProbability = mlResult.bite_probability;
+        if (mlResult.species_preferences) {
+          speciesPreferences = {
+            preferred_water: mlResult.species_preferences.preferred_water,
+            preferred_depth_min: mlResult.species_preferences.preferred_depth_min,
+            preferred_depth_max: mlResult.species_preferences.preferred_depth_max,
+            preferred_structures: mlResult.species_preferences.preferred_structures,
+          };
+        }
       } catch {
         // Fallback: compute basic score locally if ML service is down
         const tempBonus = Math.max(0, 18 - Math.abs(input.waterTempC - 14)) * 1.8;
@@ -178,13 +189,14 @@ const resolvers = {
         biteProbability = Math.max(5, Math.min(95, 40 + tempBonus - windPenalty + pressureBonus));
       }
 
-      // 3. Multi-factor ranking
+      // 3. Multi-factor ranking with species habitat preferences
       const ranked = rankSpots(
         spots as SpotRow[],
         biteProbability,
         input.targetSpecies,
         input.season,
-        3
+        3,
+        speciesPreferences,
       );
 
       const lure = getLureRecommendation(input.targetSpecies);

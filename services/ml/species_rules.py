@@ -26,6 +26,11 @@ class SpeciesProfile:
     lures: list[str]             # Recommended lures/baits
     tactics: list[str]           # Fishing techniques
     moon_sensitivity: float      # 0-1: how much moon phase affects this species
+    preferred_structures: dict[str, float] = None  # Structure name → relevance 0-1
+
+    def __post_init__(self):
+        if self.preferred_structures is None:
+            self.preferred_structures = {}
 
 
 # Central German freshwater species database
@@ -41,6 +46,7 @@ SPECIES_DB: dict[str, SpeciesProfile] = {
         lures=["Gummifisch 10-15cm", "Wobbler (Suspender)", "Köderfisch am System"],
         tactics=["Faulenzen", "Jiggen am Grund", "Vertikalangeln"],
         moon_sensitivity=0.7,
+        preferred_structures={"Steilkanten": 1.0, "Plateaus": 0.8, "Steinpackungen": 0.6, "Steinschuettungen": 0.6, "Brueckenpfeiler": 0.8, "Buhnen": 0.7, "Totholz": 0.7, "Tiefwasserzonen": 0.9},
     ),
     "Hecht": SpeciesProfile(
         name="Hecht", name_de="Hecht",
@@ -53,6 +59,7 @@ SPECIES_DB: dict[str, SpeciesProfile] = {
         lures=["Gummifisch 15-25cm", "Jerkbait", "Spinner 4-5", "Köderfisch"],
         tactics=["Spinnfischen", "Deadbait am Grund", "Schleppangeln"],
         moon_sensitivity=0.5,
+        preferred_structures={"Kraut": 1.0, "Seerosen": 0.9, "Schilf": 0.9, "Totholz": 0.8, "Stege": 0.5, "Roehricht": 0.7, "Buchten": 0.6, "Flachwasser": 0.5, "Inseln": 0.5},
     ),
     "Barsch": SpeciesProfile(
         name="Barsch", name_de="Barsch",
@@ -65,6 +72,7 @@ SPECIES_DB: dict[str, SpeciesProfile] = {
         lures=["Drop-Shot Wurm", "Gummifisch 5-8cm", "Spinner 1-3", "Crankbait"],
         tactics=["Drop-Shot", "Carolina-Rig", "Vertikalangeln", "Ultra-Light Spinnfischen"],
         moon_sensitivity=0.4,
+        preferred_structures={"Steinpackungen": 0.9, "Steinschuettungen": 0.9, "Steilkanten": 0.8, "Brueckenpfeiler": 0.7, "Stege": 0.6, "Kraut": 0.7, "Totholz": 0.6, "Buhnen": 0.6},
     ),
     "Karpfen": SpeciesProfile(
         name="Karpfen", name_de="Karpfen",
@@ -77,6 +85,7 @@ SPECIES_DB: dict[str, SpeciesProfile] = {
         lures=["Boilie 15-20mm", "Mais", "Tigernuss", "Pop-Up Boilie"],
         tactics=["Grundangeln mit Haar-Rig", "Method Feeder", "Oberflächenangeln"],
         moon_sensitivity=0.6,
+        preferred_structures={"Seerosen": 0.7, "Kraut": 0.6, "Schilf": 0.5, "Buchten": 0.6, "Flachzonen": 0.5, "Inseln": 0.4},
     ),
     "Aal": SpeciesProfile(
         name="Aal", name_de="Aal",
@@ -89,6 +98,7 @@ SPECIES_DB: dict[str, SpeciesProfile] = {
         lures=["Tauwurm", "Köderfisch (klein)", "Wurmbündel"],
         tactics=["Grundangeln", "Legangeln", "Posenangeln nachts"],
         moon_sensitivity=0.8,
+        preferred_structures={"Totholz": 0.8, "Steinpackungen": 0.7, "Steinschuettungen": 0.7, "Steilkanten": 0.6, "Kraut": 0.5, "Buhnen": 0.5},
     ),
     "Forelle": SpeciesProfile(
         name="Forelle", name_de="Forelle",
@@ -101,6 +111,7 @@ SPECIES_DB: dict[str, SpeciesProfile] = {
         lures=["Spinner 1-2", "Wobbler 3-5cm", "Kunstfliege", "Bienenmade"],
         tactics=["Spinnfischen", "Fliegenfischen", "Sbirolinofischen"],
         moon_sensitivity=0.3,
+        preferred_structures={"Kiesbetten": 0.9, "Kolke": 0.9, "Felsen": 0.8, "Stroemungskanten": 0.8, "Zulaufbereiche": 0.7, "Totholz": 0.4},
     ),
     "Wels": SpeciesProfile(
         name="Wels", name_de="Wels",
@@ -113,6 +124,7 @@ SPECIES_DB: dict[str, SpeciesProfile] = {
         lures=["Köderfisch gross", "Tauwurmbündel", "Pellet am Unterwasserpose"],
         tactics=["Grundangeln", "Klopfen/Wallerangeln", "Bojenmontage"],
         moon_sensitivity=0.7,
+        preferred_structures={"Steilkanten": 0.9, "Tiefwasserzonen": 0.8, "Totholz": 0.7, "Buhnen": 0.5, "Steinpackungen": 0.5, "Brueckenpfeiler": 0.6},
     ),
     "Schleie": SpeciesProfile(
         name="Schleie", name_de="Schleie",
@@ -125,6 +137,7 @@ SPECIES_DB: dict[str, SpeciesProfile] = {
         lures=["Made", "Mais", "Wurm", "Mini-Boilie"],
         tactics=["Posenangeln", "Grundangeln leicht", "Method Feeder"],
         moon_sensitivity=0.4,
+        preferred_structures={"Kraut": 1.0, "Seerosen": 0.9, "Schilf": 0.7, "Roehricht": 0.7},
     ),
     "Barbe": SpeciesProfile(
         name="Barbe", name_de="Barbe",
@@ -137,6 +150,7 @@ SPECIES_DB: dict[str, SpeciesProfile] = {
         lures=["Käse-Würfel", "Frühstücksfleisch", "Made", "Wurm"],
         tactics=["Grundangeln mit Futterkorb", "Feederangeln", "Posenangeln"],
         moon_sensitivity=0.3,
+        preferred_structures={"Stroemungskanten": 1.0, "Kiesbetten": 0.9, "Buhnen": 0.9, "Wehre": 0.7, "Brueckenpfeiler": 0.5},
     ),
     "Rapfen": SpeciesProfile(
         name="Rapfen", name_de="Rapfen",
@@ -149,6 +163,7 @@ SPECIES_DB: dict[str, SpeciesProfile] = {
         lures=["Blinker silber", "Wobbler (Topwater)", "Spinner 3-4"],
         tactics=["Spinnfischen Oberfläche", "Speed-Spinning", "Twitchen"],
         moon_sensitivity=0.3,
+        preferred_structures={"Stroemungskanten": 1.0, "Buhnen": 0.7, "Wehre": 0.6, "Brueckenpfeiler": 0.4},
     ),
     "Döbel": SpeciesProfile(
         name="Döbel", name_de="Döbel",
@@ -161,6 +176,7 @@ SPECIES_DB: dict[str, SpeciesProfile] = {
         lures=["Brot", "Kirsche", "Spinner klein", "Kunstfliege"],
         tactics=["Oberflächenangeln", "Spinnfischen", "Posenangeln"],
         moon_sensitivity=0.2,
+        preferred_structures={"Gehoelz": 0.8, "Totholz": 0.7, "Stroemungskanten": 0.7, "Wehre": 0.6, "Brueckenpfeiler": 0.5},
     ),
     # ===================== KÖDERFISCHE =====================
     "Köderfisch": SpeciesProfile(
