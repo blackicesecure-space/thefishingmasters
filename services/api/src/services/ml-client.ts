@@ -15,6 +15,7 @@ export interface MLPredictionResponse {
   bite_probability: number;
   confidence: number;
   model_version: string;
+  species_preferences: MLSpeciesPreferences | null;
 }
 
 export interface MLWeatherResponse {
@@ -41,6 +42,13 @@ export interface MLLunarResponse {
   solunar_rating: number;
 }
 
+export interface MLSpeciesPreferences {
+  preferred_water: string[];
+  preferred_depth_min: number;
+  preferred_depth_max: number;
+  preferred_structures: Record<string, number>;
+}
+
 export interface MLRecommendResponse {
   bite_probability: number;
   species_factor: number;
@@ -52,6 +60,7 @@ export interface MLRecommendResponse {
   species_reasons: string[];
   lure_recommendation: { lures: string[]; tactics: string[] };
   best_times: string[];
+  species_preferences: MLSpeciesPreferences | null;
 }
 
 const ML_API_BASE = process.env.ML_API_BASE_URL ?? 'http://127.0.0.1:8001';

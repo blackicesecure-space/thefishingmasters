@@ -43,6 +43,7 @@ class PredictionResponse(BaseModel):
     bite_probability: float
     confidence: float
     model_version: str
+    species_preferences: SpeciesPreferences | None = None
 
 
 class WeatherResponse(BaseModel):
@@ -76,6 +77,13 @@ class RecommendRequest(BaseModel):
     season: Season
 
 
+class SpeciesPreferences(BaseModel):
+    preferred_water: list[str]
+    preferred_depth_min: float
+    preferred_depth_max: float
+    preferred_structures: dict[str, float]
+
+
 class RecommendResponse(BaseModel):
     bite_probability: float
     species_factor: float
@@ -87,6 +95,7 @@ class RecommendResponse(BaseModel):
     species_reasons: list[str]
     lure_recommendation: dict[str, list[str]]
     best_times: list[str]
+    species_preferences: SpeciesPreferences | None = None
 
 
 # ---- App ----
@@ -111,10 +120,23 @@ def predict(payload: PredictionRequest) -> PredictionResponse:
         season=payload.season,
     )
     confidence = 0.62 if bite_probability < 60 else 0.71
+
+    # Include species habitat preferences for composite scoring
+    profile = get_species_profile(payload.target_species)
+    sp_prefs = None
+    if profile:
+        sp_prefs = SpeciesPreferences(
+            preferred_water=profile.preferred_water,
+            preferred_depth_min=profile.preferred_depth_m[0],
+            preferred_depth_max=profile.preferred_depth_m[1],
+            preferred_structures=profile.preferred_structures,
+        )
+
     return PredictionResponse(
         bite_probability=bite_probability,
         confidence=confidence,
         model_version="baseline-heuristic-v1",
+        species_preferences=sp_prefs,
     )
 
 
@@ -206,6 +228,16 @@ def recommend(payload: RecommendRequest) -> RecommendResponse:
     has_real_weather = weather_data.description != "Keine Wetterdaten verfuegbar (Fallback)"
     confidence = 0.75 if has_real_weather else 0.55
 
+    # Species habitat preferences for composite scoring
+    sp_prefs = None
+    if profile:
+        sp_prefs = SpeciesPreferences(
+            preferred_water=profile.preferred_water,
+            preferred_depth_min=profile.preferred_depth_m[0],
+            preferred_depth_max=profile.preferred_depth_m[1],
+            preferred_structures=profile.preferred_structures,
+        )
+
     return RecommendResponse(
         bite_probability=base_probability,
         species_factor=species_factor,
@@ -227,4 +259,5 @@ def recommend(payload: RecommendRequest) -> RecommendResponse:
         species_reasons=species_reasons,
         lure_recommendation=lure_rec,
         best_times=best_times,
+        species_preferences=sp_prefs,
     )
