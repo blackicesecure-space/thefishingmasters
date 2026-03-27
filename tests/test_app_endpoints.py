@@ -120,6 +120,74 @@ class AppEndpointTests(unittest.TestCase):
         data = r.json()
         self.assertEqual(data["species_factor"], 1.0)
 
+    def test_predict_returns_species_preferences(self):
+        """Predict endpoint should return species habitat preferences."""
+        r = self.client.post("/predict", json={
+            "target_species": "Zander",
+            "water_temp_c": 14,
+            "wind_kmh": 10,
+            "pressure_hpa": 1013,
+            "moon_phase": 50,
+            "season": "Herbst",
+        })
+        self.assertEqual(r.status_code, 200)
+        data = r.json()
+        prefs = data.get("species_preferences")
+        self.assertIsNotNone(prefs)
+        self.assertIn("See", prefs["preferred_water"])
+        self.assertIn("Talsperre", prefs["preferred_water"])
+        self.assertEqual(prefs["preferred_depth_min"], 3)
+        self.assertEqual(prefs["preferred_depth_max"], 15)
+        self.assertIn("Steilkanten", prefs["preferred_structures"])
+        self.assertGreater(prefs["preferred_structures"]["Steilkanten"], 0.5)
+
+    def test_predict_unknown_species_no_preferences(self):
+        """Unknown species should return null preferences."""
+        r = self.client.post("/predict", json={
+            "target_species": "Einhorn",
+            "water_temp_c": 14,
+            "wind_kmh": 10,
+            "pressure_hpa": 1013,
+            "moon_phase": 50,
+            "season": "Herbst",
+        })
+        self.assertEqual(r.status_code, 200)
+        data = r.json()
+        self.assertIsNone(data.get("species_preferences"))
+
+    def test_recommend_returns_species_preferences(self):
+        """Recommend endpoint should include species preferences."""
+        r = self.client.post("/recommend", json={
+            "target_species": "Hecht",
+            "lat": 51.3,
+            "lon": 12.0,
+            "season": "Herbst",
+        })
+        self.assertEqual(r.status_code, 200)
+        data = r.json()
+        prefs = data.get("species_preferences")
+        self.assertIsNotNone(prefs)
+        self.assertIn("See", prefs["preferred_water"])
+        self.assertIn("Kraut", prefs["preferred_structures"])
+
+    def test_structure_preferences_completeness(self):
+        """All major species should have structure preferences."""
+        major_species = ["Zander", "Hecht", "Barsch", "Karpfen", "Aal", "Forelle", "Wels", "Schleie", "Barbe", "Rapfen"]
+        for species in major_species:
+            r = self.client.post("/predict", json={
+                "target_species": species,
+                "water_temp_c": 14,
+                "wind_kmh": 10,
+                "pressure_hpa": 1013,
+                "moon_phase": 50,
+                "season": "Sommer",
+            })
+            data = r.json()
+            prefs = data.get("species_preferences")
+            self.assertIsNotNone(prefs, f"{species} should have preferences")
+            self.assertGreater(len(prefs["preferred_structures"]), 0,
+                             f"{species} should have structure preferences")
+
 
 if __name__ == '__main__':
     unittest.main()
