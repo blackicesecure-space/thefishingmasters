@@ -39,6 +39,8 @@ Thumbs.db
 *.log
 npm-debug.log*
 
-# Extracted data (may contain copyrighted LAV content)
+# Extracted data / pipeline intermediates (may contain copyrighted LAV content)
 spots_extracted.csv
 spots_geocoded.csv
+data_pipeline/*.csv
+data_pipeline/seed_*.sql
